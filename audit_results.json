@@ -1,0 +1,564 @@
+{
+  "pages": {
+    "Home": {
+      "url": "http://localhost:8082/index.html",
+      "totalControls": 64,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [
+        {
+          "tag": "input",
+          "id": "videoScrubber",
+          "className": "video-scrubber",
+          "text": "Video Scrub Bar",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 827.1875,
+          "height": 8,
+          "isVisible": true,
+          "isDeadHref": false
+        }
+      ],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": true,
+        "width": 1440,
+        "height": 900,
+        "hasContext": true
+      },
+      "videoStatus": {
+        "present": true,
+        "width": 1920,
+        "height": 1080
+      },
+      "contrastViolations": [
+        {
+          "text": "Right-to-Repair Certified",
+          "ratio": "1.00",
+          "color": "rgb(255, 85, 0)",
+          "bg": "rgb(255,85,0)"
+        },
+        {
+          "text": "TECH",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Home",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Certified Refurbished",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Custom PC Builder",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Storefront": {
+      "url": "http://localhost:8082/store.html",
+      "totalControls": 48,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": false
+      },
+      "videoStatus": {
+        "present": false
+      },
+      "contrastViolations": [
+        {
+          "text": "Certified Refurbished Hub",
+          "ratio": "1.00",
+          "color": "rgb(255, 85, 0)",
+          "bg": "rgb(255,85,0)"
+        },
+        {
+          "text": "STORE",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Storefront",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Razerclip Brand": {
+      "url": "http://localhost:8082/razerclip.html",
+      "totalControls": 37,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [
+        {
+          "tag": "input",
+          "id": "videoScrubber",
+          "className": "video-scrubber",
+          "text": "Video Scrub Bar",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 827.1875,
+          "height": 8,
+          "isVisible": true,
+          "isDeadHref": false
+        }
+      ],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": true,
+        "width": 1274,
+        "height": 518,
+        "hasContext": true
+      },
+      "videoStatus": {
+        "present": true,
+        "width": 1920,
+        "height": 1080
+      },
+      "contrastViolations": [
+        {
+          "text": "Razerclip Official Brand Hub",
+          "ratio": "1.00",
+          "color": "rgb(255, 85, 0)",
+          "bg": "rgb(255,85,0)"
+        },
+        {
+          "text": "BY TWEEZERS",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Razerclip Laptops\n⚡",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "⚡",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Compare All 3 Models",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Builds & Configurator": {
+      "url": "http://localhost:8082/builds.html",
+      "totalControls": 33,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": false
+      },
+      "videoStatus": {
+        "present": false
+      },
+      "contrastViolations": [
+        {
+          "text": "Custom PC Engineering Lab",
+          "ratio": "1.00",
+          "color": "rgb(255, 85, 0)",
+          "bg": "rgb(255,85,0)"
+        },
+        {
+          "text": "RIG LAB",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        },
+        {
+          "text": "Custom PC Builder & Projects",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Terms of Service": {
+      "url": "http://localhost:8082/terms.html",
+      "totalControls": 24,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": false
+      },
+      "videoStatus": {
+        "present": false
+      },
+      "contrastViolations": [
+        {
+          "text": "LEGAL",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Privacy Policy": {
+      "url": "http://localhost:8082/privacy.html",
+      "totalControls": 24,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": false
+      },
+      "videoStatus": {
+        "present": false
+      },
+      "contrastViolations": [
+        {
+          "text": "LEGAL",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    },
+    "Cookie Policy": {
+      "url": "http://localhost:8082/cookies.html",
+      "totalControls": 24,
+      "deadControls": [],
+      "hiddenControls": [
+        {
+          "tag": "button",
+          "id": "btnCloseQuickView",
+          "className": "btn-close-modal",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCloseCart",
+          "className": "btn-close-drawer",
+          "text": "✕",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        },
+        {
+          "tag": "button",
+          "id": "btnCheckout",
+          "className": "btn-cart-checkout",
+          "text": "Proceed to Secure Checkout",
+          "href": null,
+          "role": null,
+          "hasAriaLabel": true,
+          "width": 0,
+          "height": 0,
+          "isVisible": false,
+          "isDeadHref": false
+        }
+      ],
+      "smallTargetControls": [],
+      "brokenImages": [],
+      "pageErrors": [],
+      "failed404s": [],
+      "threeStatus": {
+        "present": false
+      },
+      "videoStatus": {
+        "present": false
+      },
+      "contrastViolations": [
+        {
+          "text": "LEGAL",
+          "ratio": "1.00",
+          "color": "rgb(255, 255, 255)",
+          "bg": "rgb(255,255,255)"
+        }
+      ]
+    }
+  },
+  "globalErrors": [],
+  "failedRequests": []
+}
