@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import type { Product, Swatch } from '../types';
 import { CATALOG_PRODUCTS } from '../data/products';
 import { Search, Plus, Check, RotateCw, X, SlidersHorizontal, ArrowUpDown, Move3d } from 'lucide-react';
@@ -37,6 +37,37 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
     Record<string, { name: string; image: string; backImage?: string }>
   >({});
   const [cardAngleMap, setCardAngleMap] = useState<Record<string, 'front' | 'back'>>({});
+
+  // Helper to preload a specific product's swatches into browser cache
+  const preloadProductSwatches = (p: Product) => {
+    p.swatches?.forEach((s) => {
+      if (s.image) {
+        const img = new Image();
+        img.src = s.image;
+      }
+      if (s.backImage) {
+        const img = new Image();
+        img.src = s.backImage;
+      }
+    });
+  };
+
+  // Preload all kicks and apparel swatches during idle time to ensure 0ms latency on clicks
+  useEffect(() => {
+    const warmCache = () => {
+      const kicks = CATALOG_PRODUCTS.filter((p) => p.category === 'kicks');
+      const rest = CATALOG_PRODUCTS.filter((p) => p.category !== 'kicks');
+      [...kicks, ...rest].forEach((p) => {
+        preloadProductSwatches(p);
+      });
+    };
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(warmCache);
+    } else {
+      setTimeout(warmCache, 200);
+    }
+  }, []);
 
   // Filter & Sort Logic
   const filteredProducts = useMemo(() => {
@@ -390,6 +421,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               <div
                 key={product.id}
                 onClick={() => onSelectProduct(product)}
+                onPointerEnter={() => preloadProductSwatches(product)}
                 className={`group flex flex-col justify-between p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 relative select-none border ${
                   isSelected
                     ? 'bg-[#18181d] border-white/40 ring-1 ring-white/40 shadow-xl'
@@ -412,11 +444,10 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   <div className="absolute inset-0 rounded-xl bg-radial from-neutral-800/20 to-transparent pointer-events-none" />
 
                   <img
-                    key={`${activeImage}-${currentAngle}`}
                     src={activeImage}
                     alt={`${product.name} - ${currentAngle} view`}
-                    loading="lazy"
-                    className="h-40 sm:h-48 md:h-52 w-auto max-w-full object-contain relative z-10 drop-shadow-[0_12px_24px_rgba(0,0,0,0.4)] transition-transform duration-300 group-hover:scale-105"
+                    decoding="async"
+                    className="h-40 sm:h-48 md:h-52 w-auto max-w-full object-contain relative z-10 drop-shadow-[0_12px_24px_rgba(0,0,0,0.4)] transition-transform duration-200 group-hover:scale-105"
                   />
 
                   {/* 3D Model Explorer Pill */}

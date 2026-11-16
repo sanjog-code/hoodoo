@@ -396,7 +396,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
             } else if (matName.includes('Chrome')) {
               stdMat.color.set(palette.silver);
             }
-            stdMat.needsUpdate = true;
+            // Do NOT trigger expensive shader program recompile when updating uniform colors!
           });
         }
       });

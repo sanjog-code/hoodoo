@@ -33,6 +33,18 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
     const defaultSwatch = currentProduct.swatches?.[0];
     setSelectedColor(defaultSwatch?.name || 'Standard');
     setViewAngle('front');
+
+    // Instant Preloader: warm browser memory cache for all colorways of current piece
+    currentProduct.swatches?.forEach((s) => {
+      if (s.image) {
+        const img = new Image();
+        img.src = s.image;
+      }
+      if (s.backImage) {
+        const img = new Image();
+        img.src = s.backImage;
+      }
+    });
   }, [currentProduct.id]);
 
   // Determine active swatch and active image based on angle
@@ -129,12 +141,12 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               }}
             />
 
-            {/* Product Rendering */}
+            {/* Product Rendering with Instant Swap & Zero DOM Thrashing */}
             <img
-              key={displayImage}
               src={displayImage}
               alt={`${currentProduct.name} - ${viewAngle.toUpperCase()} VIEW (${selectedColor})`}
-              className="relative z-10 w-[90%] h-[90%] object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.35)] transition-transform duration-500 hover:scale-105"
+              decoding="async"
+              className="relative z-10 w-[90%] h-[90%] object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.35)] transition-transform duration-300 hover:scale-105"
             />
 
             {/* Angle Badge */}
