@@ -149,24 +149,45 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
         <div className="md:col-span-6 flex flex-col justify-center space-y-6">
           
           {/* Category & Badge */}
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-neutral-500 dark:text-neutral-400 font-mono">
-              DROP ARCHIVE · {currentProduct.category}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              ARCHIVE DROP // {currentProduct.category}
             </span>
-            <span className="h-1 w-1 rounded-full bg-neutral-400" />
-            <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-full ${currentPalette.subtleClass}`}>
-              WEST COAST FIT
+            <span className="text-neutral-600">•</span>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-neutral-900 border border-neutral-700/80 text-neutral-200">
+              500GSM IRON FLEECE
+            </span>
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-neutral-900 border border-neutral-700/80 text-neutral-200">
+              WEST COAST BOXY CUT
             </span>
           </div>
 
           {/* Product Title */}
           <div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-neutral-950 dark:text-white leading-[1.05] font-display">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-neutral-950 dark:text-white leading-[1.02] font-display">
               {currentProduct.name}
             </h1>
-            <p className="mt-2 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-md">
+            {currentProduct.quote && (
+              <p className="mt-1 text-xs text-neutral-400 font-gothic tracking-wider italic">
+                {currentProduct.quote}
+              </p>
+            )}
+            <p className="mt-2 text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-lg font-sans">
               {currentProduct.description}
             </p>
+            {currentProduct.fabricSpecs && currentProduct.fabricSpecs.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {currentProduct.fabricSpecs.slice(0, 3).map((spec, i) => (
+                  <span
+                    key={i}
+                    className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-neutral-900/90 border border-neutral-800 text-neutral-300"
+                  >
+                    {spec}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Colorway Swatches */}

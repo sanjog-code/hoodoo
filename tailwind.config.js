@@ -21,10 +21,11 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['"Neue Metana Next"', '"Neue Metana"', '"NeueMetana-Regular"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['"Clash Display"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Clash Display"', '"Syne"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        street: ['"Syne"', '"Clash Display"', 'sans-serif'],
+        gothic: ['"Cinzel"', 'serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
-        logo: ['"ROUND 8 THREE"', '"Round 8"', 'sans-serif'],
       },
       boxShadow: {
         'brutal': '4px 4px 0px 0px rgba(0,0,0,1)',
