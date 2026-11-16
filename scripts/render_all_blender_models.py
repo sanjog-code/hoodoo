@@ -12,12 +12,24 @@ def setup_studio_scene():
     scene.render.film_transparent = True
     scene.render.image_settings.file_format = 'PNG'
     scene.render.image_settings.color_mode = 'RGBA'
-    scene.render.resolution_x = 1024
-    scene.render.resolution_y = 1024
+    scene.render.resolution_x = 1920
+    scene.render.resolution_y = 1920
     scene.render.resolution_percentage = 100
     
-    # Try EEVEE or CYCLES
+    # Try EEVEE or CYCLES with High-Fidelity Depth
     scene.render.engine = 'BLENDER_EEVEE'
+    if hasattr(scene, 'eevee'):
+        try:
+            scene.eevee.use_gtao = True
+            scene.eevee.gtao_distance = 0.2
+            scene.eevee.use_ssr = True
+            scene.eevee.shadow_cube_size = '2048'
+            scene.eevee.use_shadow_high_bit_depth = True
+        except Exception:
+            pass
+            
+    scene.view_settings.view_transform = 'Filmic'
+    scene.view_settings.look = 'High Contrast'
     
     # Create Camera
     cam_data = bpy.data.cameras.new(name="StudioCamera")

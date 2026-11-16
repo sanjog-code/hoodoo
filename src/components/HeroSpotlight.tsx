@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { Product, Swatch } from '../types';
-import { THUMBNAIL_PRODUCTS } from '../data/products';
-import { RotateCw, Move3d } from 'lucide-react';
+import { FEATURED_HERO, THUMBNAIL_PRODUCTS } from '../data/products';
+import { RotateCw, Move3d, Sparkles, CheckCircle2 } from 'lucide-react';
 import { BrandPalette, PALETTES } from './HoodooLogo';
 
 interface HeroSpotlightProps {
@@ -259,35 +259,72 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
 
       </div>
 
-      {/* Bottom Sub-Thumbnails: Archive collection row */}
-      <div className="mt-12 pt-6">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-[11px] font-bold tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-mono">
-            ARCHIVE COLLECTION
-          </span>
-          <span className="text-[11px] font-mono text-neutral-400">
-            SELECT PIECE
+      {/* Curated Capsule Drops: Interactive Archival Silhouette Switcher */}
+      <div className="mt-12 pt-8 border-t border-neutral-200/80 dark:border-neutral-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-bold tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-mono">
+                LIMITED CAPSULE DROPS // 4 ICONIC SILHOUETTES
+              </span>
+            </div>
+            <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-neutral-950 dark:text-white font-display">
+              SELECT SILHOUETTE TO SPOTLIGHT ABOVE
+            </h3>
+          </div>
+          <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400">
+            CLICK TO LOAD 3D MODEL & SPECS
           </span>
         </div>
-        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-          {THUMBNAIL_PRODUCTS.map((prod) => {
+
+        {/* 4 Rich Silhouette Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[FEATURED_HERO, ...THUMBNAIL_PRODUCTS].map((prod, index) => {
             const isSelected = prod.id === currentProduct.id;
+            const dropTag = `DROP 0${index + 1}`;
             return (
               <button
                 key={prod.id}
                 onClick={() => setCurrentProduct(prod)}
-                className={`group relative aspect-square rounded-xl p-1 bg-neutral-100 dark:bg-neutral-900 border transition-all overflow-hidden ${
+                className={`group text-left p-3.5 rounded-2xl border transition-all duration-300 relative flex items-center gap-4 ${
                   isSelected
-                    ? `${currentPalette.ringClass} ring-2 border-transparent scale-105 shadow-md`
-                    : 'border-neutral-200 dark:border-neutral-800 opacity-70 hover:opacity-100 hover:border-neutral-400'
+                    ? 'bg-neutral-100/90 dark:bg-neutral-850/90 border-neutral-950 dark:border-white shadow-lg ring-1 ring-neutral-950 dark:ring-white scale-[1.01]'
+                    : 'bg-white/40 dark:bg-neutral-900/40 border-neutral-200/60 dark:border-neutral-800/60 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-white dark:hover:bg-neutral-900/80'
                 }`}
                 aria-label={`Select ${prod.name}`}
               >
-                <img
-                  src={prod.image}
-                  alt={prod.name}
-                  className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
-                />
+                {/* Product Thumbnail with Studio Gradient */}
+                <div className="relative w-16 h-16 sm:w-18 sm:h-18 flex-shrink-0 rounded-xl overflow-hidden bg-neutral-200/50 dark:bg-neutral-800/50 p-1 flex items-center justify-center">
+                  <img
+                    src={prod.image}
+                    alt={prod.name}
+                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-sm"
+                  />
+                  {isSelected && (
+                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-neutral-900" />
+                  )}
+                </div>
+
+                {/* Product Metadata */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1 mb-0.5">
+                    <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-500 dark:text-neutral-400">
+                      {dropTag}
+                    </span>
+                    <span className="text-xs font-mono font-bold text-neutral-950 dark:text-white">
+                      ${prod.price}
+                    </span>
+                  </div>
+                  <h4 className="text-xs sm:text-[13px] font-bold uppercase tracking-tight text-neutral-950 dark:text-white truncate font-display">
+                    {prod.name}
+                  </h4>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
+                      {isSelected ? '✓ ACTIVE IN 3D' : 'TAP TO LOAD'}
+                    </span>
+                  </div>
+                </div>
               </button>
             );
           })}

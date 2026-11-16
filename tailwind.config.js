@@ -21,10 +21,10 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        display: ['Syne', 'Impact', 'Bebas Neue', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['"Neue Metana Next"', '"Neue Metana"', '"NeueMetana-Regular"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        display: ['"Clash Display"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+        logo: ['"ROUND 8 THREE"', '"Round 8"', 'sans-serif'],
       },
       boxShadow: {
         'brutal': '4px 4px 0px 0px rgba(0,0,0,1)',

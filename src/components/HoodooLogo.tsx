@@ -138,21 +138,21 @@ export const HoodooLogo: React.FC<HoodooLogoProps> = ({
 }) => {
   const heightClass =
     size === 'sm'
-      ? 'h-6 sm:h-7'
+      ? 'h-8 sm:h-9'
       : size === 'lg'
-      ? 'h-11 sm:h-12'
+      ? 'h-14 sm:h-16 md:h-20'
       : size === 'xl'
-      ? 'h-14 sm:h-16'
-      : 'h-8 sm:h-9';
+      ? 'h-20 sm:h-24 md:h-28'
+      : 'h-11 sm:h-12 md:h-14';
 
   // CSS Linear Gradients matching brand palettes
   const gradients: Record<BrandPalette, string> = {
     silver: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 25%, #94a3b8 65%, #475569 100%)',
-    cobalt: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #1e3a8a 100%)',
-    chrome: 'linear-gradient(135deg, #f8fafc 0%, #cbd5e1 40%, #64748b 100%)',
-    cocoa: 'linear-gradient(135deg, #a8836a 0%, #6f4e37 50%, #3d2b24 100%)',
-    crimson: 'linear-gradient(135deg, #be123c 0%, #881337 50%, #4c0519 100%)',
-    carbon: 'linear-gradient(135deg, #94a3b8 0%, #475569 50%, #0f172a 100%)',
+    cobalt: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 50%, #1e40af 100%)',
+    chrome: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 35%, #94a3b8 70%, #475569 100%)',
+    cocoa: 'linear-gradient(135deg, #d7b9a5 0%, #9c6c4c 50%, #4a2c1f 100%)',
+    crimson: 'linear-gradient(135deg, #f43f5e 0%, #be123c 50%, #4c0519 100%)',
+    carbon: 'linear-gradient(135deg, #cbd5e1 0%, #64748b 50%, #0f172a 100%)',
   };
 
   const bgGradient = gradients[palette] || gradients.silver;
@@ -160,10 +160,10 @@ export const HoodooLogo: React.FC<HoodooLogoProps> = ({
   return (
     <div className={`flex items-center select-none ${className}`}>
       <div
-        className={`${heightClass} aspect-[883/398] transition-transform duration-200 hover:scale-[1.02]`}
+        className={`${heightClass} aspect-[883/398] transition-transform duration-200 hover:scale-[1.02] filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]`}
         style={{
-          maskImage: 'url(/assets/hoodoo_logo_white.png)',
-          WebkitMaskImage: 'url(/assets/hoodoo_logo_white.png)',
+          maskImage: 'url(/assets/hoodoo_logo.svg)',
+          WebkitMaskImage: 'url(/assets/hoodoo_logo.svg)',
           maskSize: 'contain',
           WebkitMaskSize: 'contain',
           maskRepeat: 'no-repeat',
@@ -173,7 +173,7 @@ export const HoodooLogo: React.FC<HoodooLogoProps> = ({
           background: bgGradient,
         }}
         role="img"
-        aria-label="EST. WEST COAST HooDoo"
+        aria-label="HOODOO ATELIER"
       />
     </div>
   );

@@ -79,12 +79,12 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     camera.position.set(0, 0.08, 2.2);
     cameraRef.current = camera;
 
-    // 3. Renderer with ACESFilmic Tone Mapping
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    // 3. Renderer with ACESFilmic Tone Mapping & Full HD / 1px Micro-detail
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.5));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.28;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.innerHTML = '';
@@ -414,15 +414,56 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     );
 
     const textureLoader = new THREE.TextureLoader();
+    const maxAniso = rendererRef.current?.capabilities.getMaxAnisotropy() || 16;
+
+    // Create high-frequency 1px procedural weave normal map for tangible fabric depth
+    const createFabricNormal = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+      const imgData = ctx.createImageData(256, 256);
+      for (let y = 0; y < 256; y++) {
+        for (let x = 0; x < 256; x++) {
+          const idx = (y * 256 + x) * 4;
+          const u = (x / 256) * Math.PI * 64;
+          const v = (y / 256) * Math.PI * 64;
+          const twill = Math.sin(u + v * 0.5) * Math.cos(u * 0.5 - v);
+          imgData.data[idx] = Math.min(255, Math.max(0, Math.floor((twill * 0.35 + 0.5) * 255)));
+          imgData.data[idx + 1] = Math.min(255, Math.max(0, Math.floor((Math.sin(u * 2) * 0.25 + 0.5) * 255)));
+          imgData.data[idx + 2] = 255;
+          imgData.data[idx + 3] = 255;
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+      const normalTex = new THREE.CanvasTexture(canvas);
+      normalTex.wrapS = THREE.RepeatWrapping;
+      normalTex.wrapT = THREE.RepeatWrapping;
+      normalTex.repeat.set(32, 32);
+      normalTex.anisotropy = maxAniso;
+      return normalTex;
+    };
+
+    const fabricNormal = createFabricNormal();
+
     textureLoader.load(
       atlasUrl,
       (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace;
         tex.flipY = false;
+        tex.anisotropy = maxAniso;
+        tex.generateMipmaps = true;
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        tex.magFilter = THREE.LinearFilter;
         mat.map = tex;
+        if (fabricNormal) {
+          mat.normalMap = fabricNormal;
+          mat.normalScale = new THREE.Vector2(0.35, 0.35);
+        }
         mat.color.set(0xffffff); // Keep true uncompressed texture colors
-        mat.roughness = 0.90;
-        mat.metalness = 0.04;
+        mat.roughness = 0.88;
+        mat.metalness = 0.02;
         mat.needsUpdate = true;
       },
       undefined,
@@ -431,10 +472,18 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         textureLoader.load(fallbackUrl, (tex) => {
           tex.colorSpace = THREE.SRGBColorSpace;
           tex.flipY = false;
+          tex.anisotropy = maxAniso;
+          tex.generateMipmaps = true;
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
           mat.map = tex;
+          if (fabricNormal) {
+            mat.normalMap = fabricNormal;
+            mat.normalScale = new THREE.Vector2(0.35, 0.35);
+          }
           mat.color.set(0xffffff);
-          mat.roughness = 0.90;
-          mat.metalness = 0.04;
+          mat.roughness = 0.88;
+          mat.metalness = 0.02;
           mat.needsUpdate = true;
         });
       }

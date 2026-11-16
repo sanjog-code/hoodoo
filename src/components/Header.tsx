@@ -38,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({
           className="group flex items-center gap-3 transition-transform hover:opacity-95 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
           aria-label="HOODOO Home"
         >
-          <HoodooLogo size="md" palette={palette} />
+          <HoodooLogo size="lg" palette={palette} />
         </button>
 
         {/* Navigation & Controls */}

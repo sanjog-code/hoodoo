@@ -32,7 +32,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
               className="inline-block transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
               aria-label="HOODOO Home"
             >
-              <HoodooLogo size="sm" palette={palette} />
+              <HoodooLogo size="md" palette={palette} />
             </button>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-sm leading-relaxed">
               Brutal 500GSM heavyweight street armor forged in Los Angeles. Old English typography, lowrider pinstripes, and raw bandana cuts.

@@ -390,10 +390,10 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               <div
                 key={product.id}
                 onClick={() => onSelectProduct(product)}
-                className={`group flex flex-col items-center justify-between p-4 rounded-2xl cursor-pointer transition-all duration-300 relative select-none ${
+                className={`group flex flex-col justify-between p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 relative select-none border ${
                   isSelected
-                    ? `bg-neutral-200/80 dark:bg-neutral-800/80 ring-2 ${currentPalette.ringClass} shadow-lg`
-                    : 'hover:bg-neutral-100/70 dark:hover:bg-neutral-900/50'
+                    ? 'bg-[#18181d] border-white/40 ring-1 ring-white/40 shadow-xl'
+                    : 'bg-[#121215]/80 hover:bg-[#16161b] border-neutral-800 hover:border-neutral-600 shadow-sm hover:shadow-lg'
                 }`}
                 tabIndex={0}
                 role="button"
@@ -406,17 +406,17 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                 aria-label={`Select ${product.name}`}
               >
                 {/* Product Visual Container with Soft Grey Studio Backlight */}
-                <div className="w-full aspect-square flex items-center justify-center relative my-2 product-image-container">
+                <div className="w-full aspect-square flex items-center justify-center relative my-1 rounded-xl bg-neutral-900/40 p-2 overflow-hidden">
                   
-                  {/* The Soft Grey Studio Backlight: isolator behind black and white products */}
-                  <div className="absolute inset-2 rounded-full product-backlight opacity-75 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  {/* Subtle Studio Backlight Glow */}
+                  <div className="absolute inset-0 rounded-xl bg-radial from-neutral-800/20 to-transparent pointer-events-none" />
 
                   <img
                     key={`${activeImage}-${currentAngle}`}
                     src={activeImage}
                     alt={`${product.name} - ${currentAngle} view`}
                     loading="lazy"
-                    className="max-h-28 sm:max-h-32 lg:max-h-36 w-auto object-contain relative z-10 drop-shadow-[0_8px_20px_rgba(0,0,0,0.25)] transition-transform duration-300 group-hover:scale-105"
+                    className="h-40 sm:h-48 md:h-52 w-auto max-w-full object-contain relative z-10 drop-shadow-[0_12px_24px_rgba(0,0,0,0.4)] transition-transform duration-300 group-hover:scale-105"
                   />
 
                   {/* 3D Model Explorer Pill */}
@@ -427,11 +427,11 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                         onSelectProduct(product);
                         if (onOpen3D) onOpen3D(product);
                       }}
-                      className={`absolute top-1 right-1 z-20 px-2 py-0.5 rounded-full ${currentPalette.pillTagClass} text-[9px] font-mono font-extrabold uppercase tracking-wider backdrop-blur-sm opacity-90 group-hover:opacity-100 transition-all hover:scale-105 flex items-center gap-1 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400`}
+                      className="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-full bg-neutral-900/90 hover:bg-white text-white hover:text-neutral-950 border border-neutral-700 hover:border-white text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm transition-all hover:scale-105 flex items-center gap-1 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                       title="Inspect piece in 3D WebGL Space"
                       aria-label={`Inspect ${product.name} in 3D`}
                     >
-                      <Move3d className="w-2.5 h-2.5" />
+                      <Move3d className="w-3 h-3 text-cyan-400" />
                       <span>3D</span>
                     </button>
                   )}
@@ -439,11 +439,11 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   {/* Front/Back View Flip Button */}
                   <button
                     onClick={(e) => toggleCardAngle(e, product.id)}
-                    className="absolute top-1 left-1 z-20 px-2 py-0.5 rounded-full bg-neutral-900/80 dark:bg-neutral-100/80 text-white dark:text-neutral-950 text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                    className="absolute top-2 left-2 z-20 px-2.5 py-1 rounded-full bg-neutral-900/90 text-white border border-neutral-700 text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                     title={`Switch to ${currentAngle === 'front' ? 'Back' : 'Front'} View`}
                     aria-label={`Switch ${product.name} to ${currentAngle === 'front' ? 'back' : 'front'} view`}
                   >
-                    <RotateCw className="w-2.5 h-2.5" />
+                    <RotateCw className="w-3 h-3" />
                     <span>{currentAngle === 'front' ? 'BACK' : 'FRONT'}</span>
                   </button>
 
@@ -452,19 +452,19 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     onClick={(e) => handleQuickAddClick(e, product)}
                     title="Quick Add to Bag"
                     aria-label={`Quick add ${product.name} to cart`}
-                    className="absolute bottom-1 right-1 z-20 p-2 rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 opacity-0 group-hover:opacity-100 transition-all hover:scale-110 active:scale-95 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                    className="absolute bottom-2 right-2 z-20 p-2.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-950 transition-all hover:scale-110 active:scale-95 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                   >
                     {isJustAdded ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <Check className="w-4 h-4 text-emerald-600 font-bold" />
                     ) : (
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-4 h-4" />
                     )}
                   </button>
                 </div>
 
-                {/* Colorway Swatches Preview on Card with >=32px touch bounding area */}
+                {/* Colorway Swatches Preview */}
                 {product.swatches && (
-                  <div className="flex items-center gap-1 my-1 z-20">
+                  <div className="flex items-center gap-1.5 my-2 z-20">
                     {product.swatches.map((swatch) => {
                       const isSwatchActive =
                         (selectedColorwayMap[product.id]?.name ||
@@ -478,9 +478,9 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                           aria-label={`Select colorway ${swatch.name} for ${product.name}`}
                         >
                           <div
-                            className={`w-3.5 h-3.5 rounded-full border border-neutral-300 dark:border-neutral-700 transition-all ${
+                            className={`w-4 h-4 rounded-full border border-neutral-600 transition-all ${
                               isSwatchActive
-                                ? `scale-125 ring-1.5 ${currentPalette.ringClass} shadow-sm`
+                                ? 'scale-125 ring-2 ring-white shadow-sm'
                                 : 'opacity-70 hover:opacity-100'
                             }`}
                             style={{ backgroundColor: swatch.color }}
@@ -491,27 +491,19 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   </div>
                 )}
 
-                {/* Product Metadata: Price hidden unless clicked/selected! */}
-                <div className="w-full text-center mt-2 space-y-1">
-                  <h3 className="text-xs font-bold text-neutral-900 dark:text-neutral-100 uppercase tracking-tight truncate font-sans">
-                    {product.name}
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">
+                {/* Product Metadata: Clear, Bold, High-End Atelier Pricing */}
+                <div className="w-full text-left mt-2 space-y-1">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <h3 className="text-xs sm:text-sm font-bold text-neutral-100 uppercase tracking-tight truncate font-display">
+                      {product.name}
+                    </h3>
+                    <span className="text-xs sm:text-sm font-mono font-extrabold text-white tracking-tight tabular-nums flex-shrink-0">
+                      ${product.price}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 truncate font-sans">
                     {product.subtitle}
                   </p>
-
-                  {/* PRICE DISPLAY: Visible ONLY when clicked / selected */}
-                  <div className="pt-1 min-h-[22px] flex items-center justify-center font-mono">
-                    {isSelected ? (
-                      <span className={`text-xs font-black ${currentPalette.badgeText} font-mono tracking-tight animate-fadeIn tabular-nums`}>
-                        ${product.price} USD
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
-                        SELECT PIECE
-                      </span>
-                    )}
-                  </div>
                 </div>
               </div>
             );
