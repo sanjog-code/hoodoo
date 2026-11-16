@@ -202,7 +202,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-neutral-200/80 dark:border-neutral-800/80 pb-4">
           
           {/* Category Tabs */}
-          <div className="flex items-center gap-5 sm:gap-8 text-xs font-bold tracking-wider uppercase font-sans">
+          <div className="flex items-center gap-5 sm:gap-8 text-xs font-bold tracking-wider uppercase font-sans" role="tablist" aria-label="Catalog categories">
             {[
               { id: 'all', label: 'ALL GEAR' },
               { id: 'hoodie', label: 'HEAVY HOODIES' },
@@ -211,11 +211,13 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
             ].map((tab) => (
               <button
                 key={tab.id}
+                role="tab"
+                aria-selected={categoryFilter === tab.id}
                 onClick={() => setCategoryFilter(tab.id as CategoryFilter)}
-                className={`transition-colors py-1 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm ${
+                className={`transition-colors py-1.5 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm ${
                   categoryFilter === tab.id
                     ? 'text-neutral-950 dark:text-white font-extrabold'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                    : 'text-neutral-700 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                 }`}
                 aria-label={`Filter by ${tab.label}`}
               >
@@ -230,28 +232,30 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
           {/* Search + Filter Toggle */}
           <div className="flex items-center gap-3">
             <div className="relative min-w-[200px] flex-1 sm:flex-initial">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" aria-hidden="true" />
               <input
                 type="text"
+                role="searchbox"
                 placeholder="Search drop or cut..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 rounded-full text-xs bg-neutral-200/60 dark:bg-neutral-800/60 outline-none text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-400 transition-colors font-mono"
-                aria-label="Search catalog"
+                aria-label="Search catalog for drop or cut"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
-                  aria-label="Clear search"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-full"
+                  aria-label="Clear search query"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
 
             <button
               onClick={() => setShowFiltersPanel((prev) => !prev)}
+              aria-expanded={showFiltersPanel}
               className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-mono font-bold tracking-wider transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                 showFiltersPanel || activeFiltersCount > 0
                   ? currentPalette.activeFilterClass
@@ -259,10 +263,10 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               }`}
               aria-label="Toggle Filter Options"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <SlidersHorizontal className="w-3.5 h-3.5" aria-hidden="true" />
               <span>FILTERS</span>
               {activeFiltersCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-white text-neutral-950 text-[10px] flex items-center justify-center font-bold">
+                <span className="w-4 h-4 rounded-full bg-white text-neutral-950 text-[10px] flex items-center justify-center font-bold" aria-live="polite">
                   {activeFiltersCount}
                 </span>
               )}
@@ -277,8 +281,8 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               
               {/* Filter 1: Colorway Tone */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-500 block">
+              <div className="space-y-1.5" role="radiogroup" aria-label="Colorway tone filters">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 block">
                   COLORWAY TONE
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -290,11 +294,13 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   ].map((t) => (
                     <button
                       key={t.id}
+                      role="radio"
+                      aria-checked={toneFilter === t.id}
                       onClick={() => setToneFilter(t.id as ToneFilter)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         toneFilter === t.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
-                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white'
                       }`}
                     >
                       {t.label}
@@ -304,8 +310,8 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               </div>
 
               {/* Filter 2: Price Bracket */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-500 block">
+              <div className="space-y-1.5" role="radiogroup" aria-label="Price bracket filters">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 block">
                   PRICE BRACKET
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -317,11 +323,13 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   ].map((p) => (
                     <button
                       key={p.id}
+                      role="radio"
+                      aria-checked={priceFilter === p.id}
                       onClick={() => setPriceFilter(p.id as PriceFilter)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         priceFilter === p.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
-                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white'
                       }`}
                     >
                       {p.label}
@@ -331,9 +339,9 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               </div>
 
               {/* Filter 3: Sort By */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-500 block flex items-center gap-1">
-                  <ArrowUpDown className="w-3 h-3" />
+              <div className="space-y-1.5" role="radiogroup" aria-label="Sort options">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 block flex items-center gap-1">
+                  <ArrowUpDown className="w-3 h-3" aria-hidden="true" />
                   <span>SORT ARCHIVE</span>
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -345,11 +353,13 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   ].map((s) => (
                     <button
                       key={s.id}
+                      role="radio"
+                      aria-checked={sortOption === s.id}
                       onClick={() => setSortOption(s.id as SortOption)}
                       className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         sortOption === s.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
-                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                          : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white'
                       }`}
                     >
                       {s.label}
@@ -362,7 +372,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
 
             {/* Active filters status bar & Reset button */}
             <div className="flex items-center justify-between pt-2 border-t border-neutral-200/60 dark:border-neutral-800/60 text-xs">
-              <span className="text-neutral-500 font-mono">
+              <span className="text-neutral-700 dark:text-neutral-300 font-mono">
                 Showing {filteredProducts.length} pieces
               </span>
               {activeFiltersCount > 0 && (
@@ -422,6 +432,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                 key={product.id}
                 onClick={() => onSelectProduct(product)}
                 onPointerEnter={() => preloadProductSwatches(product)}
+                aria-pressed={isSelected}
                 className={`group flex flex-col justify-between p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-200 relative select-none border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   isSelected
                     ? 'bg-[#18181d] border-white/40 ring-1 ring-white/40 shadow-xl'
@@ -435,7 +446,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     onSelectProduct(product);
                   }
                 }}
-                aria-label={`Select ${product.name}`}
+                aria-label={`Select ${product.name}, price $${product.price}`}
               >
                 {/* Product Visual Container with Soft Grey Studio Backlight */}
                 <div className="w-full aspect-square flex items-center justify-center relative my-1 rounded-xl bg-neutral-900/40 p-2 overflow-hidden">
@@ -470,6 +481,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                   {/* Front/Back View Flip Button */}
                   <button
                     onClick={(e) => toggleCardAngle(e, product.id)}
+                    aria-pressed={currentAngle === 'back'}
                     className="absolute top-2 left-2 z-20 px-2.5 py-1 rounded-full bg-neutral-900/90 text-white border border-neutral-700 text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                     title={`Switch to ${currentAngle === 'front' ? 'Back' : 'Front'} View`}
                     aria-label={`Switch ${product.name} to ${currentAngle === 'front' ? 'back' : 'front'} view`}
@@ -483,7 +495,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     onClick={(e) => handleQuickAddClick(e, product)}
                     title="Quick Add to Bag"
                     aria-label={`Quick add ${product.name} to cart`}
-                    className="absolute bottom-2 right-2 z-20 p-2.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-950 transition-all active:translate-y-[1px] shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                    className="absolute bottom-2 right-2 z-20 p-2.5 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full bg-white hover:bg-neutral-200 text-neutral-950 transition-all active:translate-y-[1px] shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                   >
                     {isJustAdded ? (
                       <Check className="w-4 h-4 text-emerald-600 font-bold" />
@@ -495,7 +507,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
 
                 {/* Colorway Swatches Preview */}
                 {product.swatches && (
-                  <div className="flex items-center gap-1.5 my-2 z-20">
+                  <div className="flex items-center gap-1 my-2 z-20" role="radiogroup" aria-label={`Colorways for ${product.name}`}>
                     {product.swatches.map((swatch) => {
                       const isSwatchActive =
                         (selectedColorwayMap[product.id]?.name ||
@@ -504,7 +516,9 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                         <button
                           key={swatch.name}
                           onClick={(e) => handleSelectColorway(e, product.id, swatch)}
-                          className="p-1.5 rounded-full flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                          role="radio"
+                          aria-checked={isSwatchActive}
+                          className="p-1.5 min-w-[36px] min-h-[36px] rounded-full flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                           title={swatch.name}
                           aria-label={`Select colorway ${swatch.name} for ${product.name}`}
                         >

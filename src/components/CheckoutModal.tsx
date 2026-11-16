@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CartItem } from '../types';
 import { X, CheckCircle2, Lock, CreditCard, ArrowRight } from 'lucide-react';
 
@@ -23,6 +23,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderId, setOrderId] = useState('');
 
+  const resetAndClose = () => {
+    setStep('details');
+    onClose();
+  };
+
+  // Close modal on Escape key press (WCAG 2.1.2 compliance)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') resetAndClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const total = cartItems.reduce(
@@ -41,16 +56,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     }, 1200);
   };
 
-  const resetAndClose = () => {
-    setStep('details');
-    onClose();
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 font-sans">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 font-sans"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="checkout-modal-title"
+    >
       <div
         className="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm"
         onClick={resetAndClose}
+        aria-hidden="true"
       />
       <div className="relative w-full max-w-lg bg-white dark:bg-[#0c0c0e] border border-neutral-200 dark:border-neutral-800 rounded-3xl shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto text-neutral-900 dark:text-neutral-100">
         
@@ -67,11 +83,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4 text-emerald-500" />
-              <span className="text-xs font-mono font-bold tracking-widest text-neutral-400 uppercase">
+              <span className="text-xs font-mono font-bold tracking-widest text-neutral-600 dark:text-neutral-400 uppercase">
                 EXPRESS STREET CHECKOUT
               </span>
             </div>
-            <h2 className="text-2xl font-black uppercase tracking-tight text-neutral-950 dark:text-white font-display">
+            <h2 id="checkout-modal-title" className="text-2xl font-black uppercase tracking-tight text-neutral-950 dark:text-white font-display">
               CONFIRM GEAR & DISPATCH
             </h2>
 
@@ -83,7 +99,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     <img src={item.product.image} alt={item.product.name} className="w-10 h-10 object-contain rounded-lg bg-white dark:bg-neutral-800 p-0.5" />
                     <div>
                       <p className="font-bold uppercase truncate max-w-[200px]">{item.product.name}</p>
-                      <p className="text-[10px] text-neutral-500 font-mono">Qty: {item.quantity} | Size: {item.selectedSize}</p>
+                      <p className="text-[10px] text-neutral-600 dark:text-neutral-400 font-mono">Qty: {item.quantity} | Size: {item.selectedSize}</p>
                     </div>
                   </div>
                   <span className="font-mono font-bold tabular-nums">${item.product.price * item.quantity}</span>
@@ -98,12 +114,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {/* Shipping & Payment Form */}
             <form onSubmit={handlePay} className="space-y-3.5 text-xs font-mono">
               <div>
-                <label className="block text-[11px] font-bold text-neutral-600 dark:text-neutral-400 mb-1">
+                <label className="block text-[11px] font-bold text-neutral-800 dark:text-neutral-200 mb-1">
                   EMAIL FOR TRACKING
                 </label>
                 <input
                   type="email"
                   required
+                  aria-required="true"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   aria-label="Email for tracking"
@@ -112,12 +130,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-neutral-600 dark:text-neutral-400 mb-1">
+                <label className="block text-[11px] font-bold text-neutral-800 dark:text-neutral-200 mb-1">
                   RECIPIENT NAME
                 </label>
                 <input
                   type="text"
                   required
+                  aria-required="true"
+                  autoComplete="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   aria-label="Recipient name"
@@ -126,12 +146,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-neutral-600 dark:text-neutral-400 mb-1">
+                <label className="block text-[11px] font-bold text-neutral-800 dark:text-neutral-200 mb-1">
                   DELIVERY ADDRESS
                 </label>
                 <input
                   type="text"
                   required
+                  aria-required="true"
+                  autoComplete="street-address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   aria-label="Delivery address"
@@ -140,14 +162,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-neutral-600 dark:text-neutral-400 mb-1 flex items-center justify-between">
+                <label className="block text-[11px] font-bold text-neutral-800 dark:text-neutral-200 mb-1 flex items-center justify-between">
                   <span>PAYMENT CARD</span>
-                  <span className="flex items-center gap-1 text-[10px] text-neutral-400">
+                  <span className="flex items-center gap-1 text-[10px] text-neutral-500 dark:text-neutral-400">
                     <CreditCard className="w-3 h-3" /> Encrypted Sandbox
                   </span>
                 </label>
                 <input
                   type="text"
+                  autoComplete="cc-number"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(e.target.value)}
                   aria-label="Payment card number"
@@ -178,7 +201,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <div>
-              <span className="text-xs font-mono font-bold tracking-widest text-neutral-400 uppercase">
+              <span className="text-xs font-mono font-bold tracking-widest text-neutral-600 dark:text-neutral-400 uppercase">
                 ORDER DISPATCHED
               </span>
               <h2 className="text-2xl font-black uppercase tracking-tight text-neutral-950 dark:text-white mt-1 font-display">
@@ -186,7 +209,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </h2>
             </div>
 
-            <p className="text-xs text-neutral-600 dark:text-neutral-400 max-w-xs mx-auto leading-relaxed">
+            <p className="text-xs text-neutral-700 dark:text-neutral-300 max-w-xs mx-auto leading-relaxed">
               Order <strong>{orderId}</strong> is prepped for dispatch. Tracking details will be emailed to <strong>{email}</strong>.
             </p>
 

@@ -77,10 +77,11 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
             <div className="flex items-center gap-1.5 p-1 bg-neutral-200/80 dark:bg-neutral-800/80 rounded-full border border-neutral-300/60 dark:border-neutral-700/60 backdrop-blur-sm">
               <button
                 onClick={() => setViewAngle('front')}
+                aria-pressed={viewAngle === 'front'}
                 className={`px-3 py-1 text-[11px] font-mono font-bold tracking-wider rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   viewAngle === 'front'
                     ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                    : 'text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white'
                 }`}
                 aria-label="Front View"
               >
@@ -88,10 +89,11 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               </button>
               <button
                 onClick={() => setViewAngle('back')}
+                aria-pressed={viewAngle === 'back'}
                 className={`px-3 py-1 text-[11px] font-mono font-bold tracking-wider rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   viewAngle === 'back'
                     ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 shadow-sm'
-                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                    : 'text-neutral-700 dark:text-neutral-300 hover:text-neutral-950 dark:hover:text-white'
                 }`}
                 aria-label="Back View"
               >
@@ -181,11 +183,11 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               {currentProduct.name}
             </h1>
             {currentProduct.quote && (
-              <p className="mt-1 text-xs text-neutral-400 font-gothic tracking-wider italic">
+              <p className="mt-1 text-xs text-neutral-700 dark:text-neutral-300 font-gothic tracking-wider italic">
                 {currentProduct.quote}
               </p>
             )}
-            <p className="mt-2 text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-lg font-sans">
+            <p className="mt-2 text-xs sm:text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed max-w-lg font-sans">
               {currentProduct.description}
             </p>
             {currentProduct.fabricSpecs && currentProduct.fabricSpecs.length > 0 && (
@@ -205,21 +207,23 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
           {/* Colorway Swatches */}
           {currentProduct.swatches && currentProduct.swatches.length > 0 && (
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-[11px] uppercase tracking-wider font-mono text-neutral-500 dark:text-neutral-400">
+              <div className="flex items-center justify-between text-[11px] uppercase tracking-wider font-mono text-neutral-700 dark:text-neutral-300">
                 <span>OFFERED COLORWAY:</span>
                 <span className="text-neutral-950 dark:text-white font-bold">{selectedColor}</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2" role="radiogroup" aria-label="Offered colorways">
                 {currentProduct.swatches.map((swatch) => {
                   const isActive = selectedColor === swatch.name;
                   return (
                     <button
                       key={swatch.name}
                       onClick={() => handleSelectColorway(swatch.name)}
-                      className={`relative p-1 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
+                      role="radio"
+                      aria-checked={isActive}
+                      className={`relative min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         isActive
-                          ? 'ring-2 ring-neutral-950 dark:ring-white scale-110 shadow-sm'
-                          : 'opacity-65 hover:opacity-100'
+                          ? 'ring-2 ring-neutral-950 dark:ring-white scale-105 shadow-sm'
+                          : 'opacity-70 hover:opacity-100'
                       }`}
                       aria-label={`Select colorway ${swatch.name}`}
                       title={swatch.name}
@@ -237,18 +241,20 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
 
           {/* Sizing Selector */}
           <div className="space-y-2">
-            <span className="text-[11px] font-bold tracking-wider text-neutral-500 dark:text-neutral-400 uppercase block font-mono">
+            <span className="text-[11px] font-bold tracking-wider text-neutral-700 dark:text-neutral-300 uppercase block font-mono">
               BOX-CUT SIZING
             </span>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Garment sizes">
               {currentProduct.sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`h-9 px-4 rounded-lg text-xs font-bold tracking-wider transition-all font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
+                  role="radio"
+                  aria-checked={selectedSize === size}
+                  className={`h-10 min-w-[44px] px-4 rounded-lg text-xs font-bold tracking-wider transition-all font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                     selectedSize === size
                       ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 shadow-sm'
-                      : 'bg-neutral-200/60 dark:bg-neutral-800/60 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700'
+                      : 'bg-neutral-200/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-300 dark:hover:bg-neutral-700'
                   }`}
                   aria-label={`Select size ${size}`}
                 >
@@ -264,7 +270,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               <span className="text-3xl sm:text-4xl font-black tracking-tight font-display text-neutral-950 dark:text-white tabular-nums">
                 ${currentProduct.price}
               </span>
-              <span className="text-xs uppercase tracking-widest text-neutral-600 dark:text-neutral-400 font-mono font-medium">
+              <span className="text-xs uppercase tracking-widest text-neutral-700 dark:text-neutral-300 font-mono font-medium">
                 AVAILABLE · LA ATELIER DISPATCH
               </span>
             </div>
@@ -298,7 +304,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold tracking-widest text-neutral-500 dark:text-neutral-400 uppercase font-mono">
+              <span className="text-[11px] font-bold tracking-widest text-neutral-700 dark:text-neutral-300 uppercase font-mono">
                 LIMITED CAPSULE DROPS // 4 ICONIC SILHOUETTES
               </span>
             </div>
@@ -306,7 +312,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               SELECT SILHOUETTE TO SPOTLIGHT ABOVE
             </h3>
           </div>
-          <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400">
+          <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400">
             CLICK TO LOAD 3D MODEL & SPECS
           </span>
         </div>
@@ -320,6 +326,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               <button
                 key={prod.id}
                 onClick={() => setCurrentProduct(prod)}
+                aria-pressed={isSelected}
                 className={`group text-left p-3.5 rounded-2xl border transition-all duration-200 relative flex items-center gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   isSelected
                     ? 'bg-neutral-100/90 dark:bg-neutral-850/90 border-neutral-950 dark:border-white shadow-lg ring-1 ring-neutral-950 dark:ring-white'
@@ -342,7 +349,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                 {/* Product Metadata */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-1 mb-0.5">
-                    <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-500 dark:text-neutral-400">
+                    <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-600 dark:text-neutral-400">
                       {dropTag}
                     </span>
                     <span className="text-xs font-mono font-bold text-neutral-950 dark:text-white">
@@ -353,7 +360,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                     {prod.name}
                   </h4>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
+                    <span className="text-[10px] font-mono text-neutral-600 dark:text-neutral-400">
                       {isSelected ? '✓ ACTIVE IN 3D' : 'TAP TO LOAD'}
                     </span>
                   </div>

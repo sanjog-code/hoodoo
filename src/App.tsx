@@ -137,6 +137,14 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5f4] dark:bg-[#0a0a0c] text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+      {/* Skip to Main Content Landmark for A11y */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-neutral-950 focus:text-white focus:dark:bg-white focus:dark:text-neutral-950 focus:rounded-md focus:shadow-xl focus:font-mono focus:text-xs focus:font-bold focus:outline-none focus:ring-2 focus:ring-neutral-400"
+      >
+        Skip to main content
+      </a>
+
       {/* Top Header */}
       <Header
         darkMode={darkMode}
@@ -154,7 +162,7 @@ export function App() {
       />
 
       {/* Main Content Router */}
-      <main className="flex-1">
+      <main id="main-content" className="flex-1" tabIndex={-1}>
         {currentPage === 'home' && (
           <>
             <HeroSpotlight

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CartItem } from '../types';
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
 
@@ -22,6 +22,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const [promoCode, setPromoCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<number>(0);
   const [promoError, setPromoError] = useState<string | null>(null);
+
+  // Close modal on Escape key press (WCAG 2.1.2 compliance)
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -51,10 +61,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden font-sans">
+    <div
+      className="fixed inset-0 z-50 overflow-hidden font-sans"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-drawer-title"
+    >
       <div
         className="absolute inset-0 bg-neutral-950/70 backdrop-blur-sm transition-opacity"
         onClick={onClose}
+        aria-hidden="true"
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -62,7 +78,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
           
           <div className="p-6 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-black tracking-tight uppercase font-display">YOUR BAG</h2>
+              <h2 id="cart-drawer-title" className="text-lg font-black tracking-tight uppercase font-display">YOUR BAG</h2>
               <span className="px-2.5 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-xs font-mono font-bold tabular-nums">
                 {cartItems.reduce((acc, i) => acc + i.quantity, 0)} ITEMS
               </span>
@@ -85,7 +101,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </span>
               <span className="tabular-nums">{shippingProgress.toFixed(0)}%</span>
             </div>
-            <div className="w-full bg-neutral-200 dark:bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="w-full bg-neutral-200 dark:bg-neutral-800 h-1.5 rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuenow={Math.round(shippingProgress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Free shipping threshold progress"
+            >
               <div
                 className="bg-neutral-950 dark:bg-white h-full transition-all duration-300 rounded-full"
                 style={{ width: `${shippingProgress}%` }}
@@ -99,7 +122,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <p className="text-sm font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200">
                   Your bag is empty
                 </p>
-                <p className="text-xs text-neutral-500 max-w-xs">
+                <p className="text-xs text-neutral-600 dark:text-neutral-400 max-w-xs">
                   Pick your favorite box-cut heavy hoodie, tee, or low-top kicks from the catalog.
                 </p>
               </div>
@@ -118,7 +141,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <h4 className="text-xs font-black uppercase truncate text-neutral-900 dark:text-neutral-100">
                       {item.product.name}
                     </h4>
-                    <div className="flex items-center gap-2 text-[11px] font-mono text-neutral-500 mt-0.5">
+                    <div className="flex items-center gap-2 text-[11px] font-mono text-neutral-600 dark:text-neutral-400 mt-0.5">
                       <span>SIZE: {item.selectedSize}</span>
                       <span>•</span>
                       <span className="tabular-nums">${item.product.price}</span>
@@ -128,18 +151,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       <div className="flex items-center bg-white dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-700">
                         <button
                           onClick={() => onUpdateQuantity(idx, item.quantity - 1)}
-                          aria-label="Decrease quantity"
-                          className="w-8 h-8 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400"
+                          aria-label={`Decrease quantity of ${item.product.name}`}
+                          className="w-9 h-9 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 active:bg-neutral-200"
                         >
                           <Minus className="w-3.5 h-3.5" />
                         </button>
-                        <span className="px-2 text-xs font-mono font-bold tabular-nums min-w-[24px] text-center">
+                        <span
+                          className="px-2 text-xs font-mono font-bold tabular-nums min-w-[24px] text-center"
+                          aria-label={`Quantity: ${item.quantity}`}
+                        >
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => onUpdateQuantity(idx, item.quantity + 1)}
-                          aria-label="Increase quantity"
-                          className="w-8 h-8 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-600 dark:text-neutral-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400"
+                          aria-label={`Increase quantity of ${item.product.name}`}
+                          className="w-9 h-9 flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 active:bg-neutral-200"
                         >
                           <Plus className="w-3.5 h-3.5" />
                         </button>
@@ -147,8 +173,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
                       <button
                         onClick={() => onRemoveItem(idx)}
-                        aria-label="Remove item"
-                        className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                        aria-label={`Remove ${item.product.name} from bag`}
+                        className="w-9 h-9 flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -182,17 +208,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </button>
                 </div>
                 {promoError && (
-                  <p className="text-[10px] text-red-500 font-mono">{promoError}</p>
+                  <p className="text-[10px] text-red-500 font-mono" role="alert">{promoError}</p>
                 )}
                 {appliedDiscount > 0 && (
-                  <p className="text-[10px] text-emerald-500 font-mono">
+                  <p className="text-[10px] text-emerald-500 font-mono" role="status">
                     ✓ {appliedDiscount}% DISCOUNT APPLIED
                   </p>
                 )}
               </form>
 
               <div className="space-y-1.5 text-xs font-mono">
-                <div className="flex justify-between text-neutral-500">
+                <div className="flex justify-between text-neutral-600 dark:text-neutral-400">
                   <span>Subtotal</span>
                   <span className="tabular-nums">${rawSubtotal.toFixed(2)}</span>
                 </div>
@@ -202,7 +228,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <span className="tabular-nums">-${discountAmount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-neutral-500">
+                <div className="flex justify-between text-neutral-600 dark:text-neutral-400">
                   <span>Shipping</span>
                   <span>{freeShippingMet ? 'FREE' : '$15.00'}</span>
                 </div>
@@ -222,7 +248,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center justify-center gap-2 text-[10px] font-mono text-neutral-400">
+              <div className="flex items-center justify-center gap-2 text-[10px] font-mono text-neutral-500 dark:text-neutral-400">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                 <span>SECURE ENCRYPTED 256-BIT CHECKOUT</span>
               </div>

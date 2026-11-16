@@ -43,6 +43,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     initialColor || initialProduct.swatches?.[0]?.name || 'Standard'
   );
   const [isAutoRotate, setIsAutoRotate] = useState<boolean>(true);
+  const [activePreset, setActivePreset] = useState<'front' | 'back' | 'angle' | 'close'>('front');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [snapshotTaken, setSnapshotTaken] = useState<boolean>(false);
 
@@ -498,6 +499,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
   // Camera preset buttons
   const setCameraPreset = (view: 'front' | 'back' | 'angle' | 'close') => {
     if (!cameraRef.current || !controlsRef.current) return;
+    setActivePreset(view);
     setIsAutoRotate(false);
     const cam = cameraRef.current;
     const ctrl = controlsRef.current;
@@ -567,7 +569,12 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="studio-3d-title"
+    >
       {/* 3D WebGL Canvas Viewport */}
       <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing select-none" />
 
@@ -575,13 +582,13 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between pointer-events-none z-20">
         <div className="flex items-center gap-3">
           <div className={`w-9 h-9 rounded-xl ${currentPalette.studioAccentClass} flex items-center justify-center`}>
-            <Move3d className="w-5 h-5" />
+            <Move3d className="w-5 h-5" aria-hidden="true" />
           </div>
           <div>
             <div className={`text-[10px] font-mono font-bold uppercase tracking-widest ${currentPalette.badgeText}`}>
               3D ATELIER VIEWPORT · 360° INSPECTION
             </div>
-            <h2 className="text-sm sm:text-base font-extrabold tracking-tight text-white uppercase font-sans">
+            <h2 id="studio-3d-title" className="text-sm sm:text-base font-extrabold tracking-tight text-white uppercase font-sans">
               {activeProduct.name}
             </h2>
           </div>
@@ -595,7 +602,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
             className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-full bg-neutral-900/80 hover:bg-neutral-800 text-white text-xs font-mono font-bold tracking-wider border border-neutral-700/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
             title="Export Frame (Hotkey: P)"
           >
-            <Camera className={`w-3.5 h-3.5 ${currentPalette.badgeText}`} />
+            <Camera className={`w-3.5 h-3.5 ${currentPalette.badgeText}`} aria-hidden="true" />
             <span>EXPORT FRAME (P)</span>
           </button>
 
@@ -618,13 +625,15 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1 p-1 bg-neutral-950/80 border border-neutral-800 rounded-xl mb-1">
+        <div className="flex items-center gap-1 p-1 bg-neutral-950/80 border border-neutral-800 rounded-xl mb-1" role="radiogroup" aria-label="Filter 3D pieces">
           {(['all', 'hoodie', 'tee', 'kicks'] as const).map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
+              role="radio"
+              aria-checked={activeCategory === cat}
               aria-label={`Filter by ${cat}`}
-              className={`flex-1 py-1 text-[9px] font-mono font-bold uppercase rounded-lg transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
+              className={`flex-1 py-1.5 min-h-[32px] text-[9px] font-mono font-bold uppercase rounded-lg transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
                 activeCategory === cat
                   ? `${currentPalette.buttonClass} text-white`
                   : 'text-neutral-400 hover:text-white'
@@ -678,7 +687,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
           <span>{isAutoRotate ? 'AUTOROTATE ON' : 'AUTOROTATE OFF'}</span>
         </button>
 
-        <div className="flex flex-col gap-1 p-1 bg-neutral-950/80 border border-neutral-800 rounded-2xl backdrop-blur-md">
+        <div className="flex flex-col gap-1 p-1 bg-neutral-950/80 border border-neutral-800 rounded-2xl backdrop-blur-md" role="radiogroup" aria-label="Camera angles">
           {[
             { id: 'front', label: 'FRONT' },
             { id: 'angle', label: '45° ANGLE' },
@@ -688,8 +697,14 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
             <button
               key={preset.id}
               onClick={() => setCameraPreset(preset.id as any)}
+              role="radio"
+              aria-checked={activePreset === preset.id}
               aria-label={`Camera view ${preset.label}`}
-              className="px-3 py-1.5 text-[10px] font-mono font-bold uppercase rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400"
+              className={`px-3 py-2 min-h-[36px] text-[10px] font-mono font-bold uppercase rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
+                activePreset === preset.id
+                  ? 'bg-neutral-800 text-white font-extrabold'
+                  : 'text-neutral-400 hover:text-white hover:bg-neutral-800/60'
+              }`}
             >
               {preset.label}
             </button>
@@ -703,22 +718,24 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         {/* Colorway Pill Selector: Real-Time 3D Color Change */}
         <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-neutral-950/90 border border-neutral-800 shadow-2xl backdrop-blur-xl">
           <div className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest flex items-center gap-1.5 mr-1">
-            <Sparkles className={`w-3.5 h-3.5 ${currentPalette.badgeText}`} />
+            <Sparkles className={`w-3.5 h-3.5 ${currentPalette.badgeText}`} aria-hidden="true" />
             <span>COLORWAY:</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" role="radiogroup" aria-label="3D model colorway options">
             {activeProduct.swatches?.map((swatch: Swatch) => {
               const isSelected = activeColor === swatch.name;
               return (
                 <button
                   key={swatch.name}
                   onClick={() => setActiveColor(swatch.name)}
-                  className={`group relative p-1 rounded-full transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
-                    isSelected ? `scale-125 ring-2 ${currentPalette.ringClass} shadow-lg` : 'opacity-70 hover:opacity-100 hover:scale-110'
+                  role="radio"
+                  aria-checked={isSelected}
+                  className={`group relative min-w-[40px] min-h-[40px] flex items-center justify-center p-1.5 rounded-full transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
+                    isSelected ? `scale-110 ring-2 ${currentPalette.ringClass} shadow-lg` : 'opacity-70 hover:opacity-100'
                   }`}
                   title={`Apply ${swatch.name} in 3D`}
-                  aria-label={`Select ${swatch.name}`}
+                  aria-label={`Select colorway ${swatch.name}`}
                 >
                   <div
                     className="w-6 h-6 rounded-full border border-neutral-600 shadow-inner"
