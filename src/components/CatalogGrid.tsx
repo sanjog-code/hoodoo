@@ -291,7 +291,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     <button
                       key={t.id}
                       onClick={() => setToneFilter(t.id as ToneFilter)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         toneFilter === t.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
                           : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
@@ -318,7 +318,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     <button
                       key={p.id}
                       onClick={() => setPriceFilter(p.id as PriceFilter)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         priceFilter === p.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
                           : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
@@ -346,7 +346,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     <button
                       key={s.id}
                       onClick={() => setSortOption(s.id as SortOption)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                         sortOption === s.id
                           ? 'bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-bold'
                           : 'bg-neutral-200/70 dark:bg-neutral-800/70 text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
@@ -368,7 +368,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               {activeFiltersCount > 0 && (
                 <button
                   onClick={resetFilters}
-                  className={`${currentPalette.badgeText} hover:underline font-bold font-mono`}
+                  className={`${currentPalette.badgeText} hover:underline font-bold font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm`}
                 >
                   RESET ALL FILTERS
                 </button>
@@ -422,7 +422,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                 key={product.id}
                 onClick={() => onSelectProduct(product)}
                 onPointerEnter={() => preloadProductSwatches(product)}
-                className={`group flex flex-col justify-between p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-300 relative select-none border ${
+                className={`group flex flex-col justify-between p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-200 relative select-none border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   isSelected
                     ? 'bg-[#18181d] border-white/40 ring-1 ring-white/40 shadow-xl'
                     : 'bg-[#121215]/80 hover:bg-[#16161b] border-neutral-800 hover:border-neutral-600 shadow-sm hover:shadow-lg'
@@ -447,7 +447,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     src={activeImage}
                     alt={`${product.name} - ${currentAngle} view`}
                     decoding="async"
-                    className="h-40 sm:h-48 md:h-52 w-auto max-w-full object-contain relative z-10 drop-shadow-[0_12px_24px_rgba(0,0,0,0.4)] transition-transform duration-200 group-hover:scale-105"
+                    className="h-40 sm:h-48 md:h-52 w-auto max-w-full object-contain relative z-10 drop-shadow-[0_12px_24px_rgba(0,0,0,0.4)] transition-transform duration-200 group-hover:-translate-y-1"
                   />
 
                   {/* 3D Model Explorer Pill */}
@@ -458,7 +458,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                         onSelectProduct(product);
                         if (onOpen3D) onOpen3D(product);
                       }}
-                      className="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-full bg-neutral-900/90 hover:bg-white text-white hover:text-neutral-950 border border-neutral-700 hover:border-white text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm transition-all hover:scale-105 flex items-center gap-1 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                      className="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-full bg-neutral-900/90 hover:bg-white text-white hover:text-neutral-950 border border-neutral-700 hover:border-white text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-sm transition-all flex items-center gap-1 shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                       title="Inspect piece in 3D WebGL Space"
                       aria-label={`Inspect ${product.name} in 3D`}
                     >
@@ -483,7 +483,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                     onClick={(e) => handleQuickAddClick(e, product)}
                     title="Quick Add to Bag"
                     aria-label={`Quick add ${product.name} to cart`}
-                    className="absolute bottom-2 right-2 z-20 p-2.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-950 transition-all hover:scale-110 active:scale-95 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                    className="absolute bottom-2 right-2 z-20 p-2.5 rounded-full bg-white hover:bg-neutral-200 text-neutral-950 transition-all active:translate-y-[1px] shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                   >
                     {isJustAdded ? (
                       <Check className="w-4 h-4 text-emerald-600 font-bold" />
@@ -504,7 +504,7 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
                         <button
                           key={swatch.name}
                           onClick={(e) => handleSelectColorway(e, product.id, swatch)}
-                          className="p-1 rounded-full flex items-center justify-center transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
+                          className="p-1.5 rounded-full flex items-center justify-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
                           title={swatch.name}
                           aria-label={`Select colorway ${swatch.name} for ${product.name}`}
                         >

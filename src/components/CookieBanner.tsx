@@ -18,7 +18,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ onNavigateToCookiePo
           <span>We use cookies to maintain your shopping bag across pages and remember your view mode. Read our </span>
           <button
             onClick={onNavigateToCookiePolicy}
-            className="text-neutral-950 dark:text-white font-extrabold underline underline-offset-4 hover:opacity-75"
+            className="text-neutral-950 dark:text-white font-extrabold underline underline-offset-4 hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
           >
             cookie policy
           </button>
@@ -26,7 +26,7 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ onNavigateToCookiePo
         </div>
         <button
           onClick={() => setIsDismissed(true)}
-          className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 p-0.5"
+          className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
           aria-label="Dismiss cookie notice"
         >
           <X className="w-4 h-4" />

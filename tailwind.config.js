@@ -9,14 +9,13 @@ export default {
     extend: {
       colors: {
         hoodoo: {
-          green: '#22c55e',
-          purple: '#581c87',
-          plum: '#4c1d95',
-          brandPurple: '#4c1775',
-          darkBg: '#0c0a09',
-          darkCard: '#171412',
-          lightBg: '#ffffff',
-          lightCard: '#f7f6f4',
+          canvas: 'var(--bg-canvas)',
+          surface: 'var(--bg-surface)',
+          elevated: 'var(--bg-surface-elevated)',
+          darkBg: '#0a0a0c',
+          darkCard: '#121215',
+          lightBg: '#f5f5f4',
+          lightCard: '#ffffff',
           accent: '#18181b',
         }
       },
@@ -28,25 +27,10 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
-        'brutal': '4px 4px 0px 0px rgba(0,0,0,1)',
-        'brutal-purple': '4px 4px 0px 0px #4c1d95',
+        'brutal': '3px 3px 0px 0px rgba(0,0,0,1)',
         'soft-glow': '0 20px 50px -10px rgba(0, 0, 0, 0.08)',
         'dark-glow': '0 20px 50px -10px rgba(0, 0, 0, 0.6)',
       },
-      animation: {
-        'float': 'float 4s ease-in-out infinite',
-        'pulse-subtle': 'pulseSubtle 2.5s ease-in-out infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-6px)' },
-        },
-        pulseSubtle: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.85' },
-        }
-      }
     },
   },
   plugins: [],

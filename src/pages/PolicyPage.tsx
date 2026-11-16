@@ -15,7 +15,7 @@ export const PolicyPage: React.FC<PolicyPageProps> = ({
       {/* Return to Catalog */}
       <button
         onClick={onBackToCatalog}
-        className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-neutral-500 hover:text-neutral-950 dark:hover:text-white uppercase transition-colors mb-12"
+        className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white uppercase transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>BACK TO CATALOG</span>
@@ -103,7 +103,7 @@ export const PolicyPage: React.FC<PolicyPageProps> = ({
               Payments are 256-bit encrypted. We never sell your personal information. Read our dedicated{' '}
               <button
                 onClick={onNavigateToCookiePolicy}
-                className="underline underline-offset-4 text-neutral-950 dark:text-white font-bold"
+                className="underline underline-offset-4 text-neutral-950 dark:text-white font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
               >
                 Cookie Policy
               </button>
@@ -121,7 +121,7 @@ export const PolicyPage: React.FC<PolicyPageProps> = ({
         </span>
         <button
           onClick={onBackToCatalog}
-          className="px-6 py-3 bg-neutral-950 hover:bg-black text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all"
+          className="px-6 py-3 bg-neutral-950 hover:bg-black text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all active:translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           RETURN TO CATALOG
         </button>

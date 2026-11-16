@@ -16,7 +16,7 @@ export const Toast: React.FC<ToastProps> = ({ message, onOpenCart }) => {
         <span className="text-xs font-bold uppercase tracking-wider">{message}</span>
         <button
           onClick={onOpenCart}
-          className="ml-2 text-xs font-mono font-bold underline underline-offset-2 flex items-center gap-1 opacity-80 hover:opacity-100"
+          className="ml-2 text-xs font-mono font-bold underline underline-offset-2 flex items-center gap-1 opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
         >
           <ShoppingBag className="w-3.5 h-3.5" /> Bag
         </button>

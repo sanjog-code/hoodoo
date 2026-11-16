@@ -320,9 +320,9 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
               <button
                 key={prod.id}
                 onClick={() => setCurrentProduct(prod)}
-                className={`group text-left p-3.5 rounded-2xl border transition-all duration-300 relative flex items-center gap-4 ${
+                className={`group text-left p-3.5 rounded-2xl border transition-all duration-200 relative flex items-center gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   isSelected
-                    ? 'bg-neutral-100/90 dark:bg-neutral-850/90 border-neutral-950 dark:border-white shadow-lg ring-1 ring-neutral-950 dark:ring-white scale-[1.01]'
+                    ? 'bg-neutral-100/90 dark:bg-neutral-850/90 border-neutral-950 dark:border-white shadow-lg ring-1 ring-neutral-950 dark:ring-white'
                     : 'bg-white/40 dark:bg-neutral-900/40 border-neutral-200/60 dark:border-neutral-800/60 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-white dark:hover:bg-neutral-900/80'
                 }`}
                 aria-label={`Select ${prod.name}`}
@@ -332,7 +332,7 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                   <img
                     src={prod.image}
                     alt={prod.name}
-                    className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110 drop-shadow-sm"
+                    className="w-full h-full object-contain transition-opacity duration-200 group-hover:opacity-90 drop-shadow-sm"
                   />
                   {isSelected && (
                     <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-neutral-900" />

@@ -52,8 +52,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
                 />
                 <button
                   type="submit"
-                  aria-label="Subscribe"
-                  className="absolute right-0 bottom-2 text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white transition-colors"
+                  aria-label="Subscribe to drop list"
+                  className="absolute right-0 bottom-2 text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white transition-colors p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
                 >
                   {subscribed ? (
                     <Check className="w-4 h-4 text-emerald-500" />
@@ -72,22 +72,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
 
           <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs font-semibold">
             <div className="space-y-3">
-              <span className="font-extrabold uppercase tracking-widest text-neutral-400 text-[11px] font-mono">
+              <span className="font-extrabold uppercase tracking-widest text-neutral-500 dark:text-neutral-400 text-[11px] font-mono">
                 STREET GEAR
               </span>
-              <ul className="space-y-2.5 text-neutral-600 dark:text-neutral-400">
+              <ul className="space-y-2.5 text-neutral-700 dark:text-neutral-300">
                 <li>
-                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     500GSM Heavy Hoodies
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     Boxy Heavyweight Tees
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('home')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     Raw Gum Skate Kicks
                   </button>
                 </li>
@@ -95,17 +95,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
             </div>
 
             <div className="space-y-3">
-              <span className="font-extrabold uppercase tracking-widest text-neutral-400 text-[11px] font-mono">
+              <span className="font-extrabold uppercase tracking-widest text-neutral-500 dark:text-neutral-400 text-[11px] font-mono">
                 CULTURE
               </span>
-              <ul className="space-y-2.5 text-neutral-600 dark:text-neutral-400">
+              <ul className="space-y-2.5 text-neutral-700 dark:text-neutral-300">
                 <li>
-                  <button onClick={() => onNavigate('about')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('about')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     About The Label
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('about')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('about')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     Lowrider & Chicano Roots
                   </button>
                 </li>
@@ -113,17 +113,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
             </div>
 
             <div className="space-y-3">
-              <span className="font-extrabold uppercase tracking-widest text-neutral-400 text-[11px] font-mono">
+              <span className="font-extrabold uppercase tracking-widest text-neutral-500 dark:text-neutral-400 text-[11px] font-mono">
                 SERVICES
               </span>
-              <ul className="space-y-2.5 text-neutral-600 dark:text-neutral-400">
+              <ul className="space-y-2.5 text-neutral-700 dark:text-neutral-300">
                 <li>
-                  <button onClick={() => onNavigate('policy')} className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                  <button onClick={() => onNavigate('policy')} className="hover:text-neutral-950 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     Worldwide Shipping
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => onNavigate('cookie-policy')} className="hover:text-neutral-950 dark:hover:text-white transition-colors font-bold">
+                  <button onClick={() => onNavigate('cookie-policy')} className="hover:text-neutral-950 dark:hover:text-white transition-colors font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
                     Cookie Policy
                   </button>
                 </li>
@@ -132,18 +132,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500 font-mono">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-600 dark:text-neutral-400 font-mono">
           <div>
             © {new Date().getFullYear()} HOODOO. LOS ANGELES • COMPTON • EAST LA • VENICE.
           </div>
           <div className="flex items-center gap-6">
-            <button onClick={() => onNavigate('cookie-policy')} className="hover:underline">
+            <button onClick={() => onNavigate('cookie-policy')} className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
               Cookie Policy
             </button>
-            <button onClick={() => onNavigate('policy')} className="hover:underline">
+            <button onClick={() => onNavigate('policy')} className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
               Terms
             </button>
-            <button onClick={() => onNavigate('about')} className="hover:underline">
+            <button onClick={() => onNavigate('about')} className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm">
               About
             </button>
           </div>

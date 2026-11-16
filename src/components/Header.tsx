@@ -110,17 +110,21 @@ export const Header: React.FC<HeaderProps> = ({
                     key={pKey}
                     onClick={() => onSelectPalette(pKey)}
                     title={`Palette: ${conf.name}`}
-                    className={`w-4 h-4 rounded-full transition-all flex items-center justify-center ${
+                    className={`w-5 h-5 rounded-full transition-all flex items-center justify-center p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                       isSelected
                         ? 'ring-2 ring-neutral-900 dark:ring-white scale-110'
-                        : 'opacity-70 hover:opacity-100 hover:scale-105'
+                        : 'opacity-70 hover:opacity-100'
                     }`}
-                    style={{ backgroundColor: conf.primary }}
                     aria-label={`Select ${conf.name} palette`}
                   >
-                    {isSelected && (
-                      <span className="w-1 h-1 rounded-full bg-white dark:bg-neutral-950" />
-                    )}
+                    <span
+                      className="w-full h-full rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: conf.primary }}
+                    >
+                      {isSelected && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-neutral-950" />
+                      )}
+                    </span>
                   </button>
                 );
               })}
@@ -148,7 +152,11 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <ShoppingBag className="w-5 h-5 stroke-[2]" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-2 min-w-[18px] h-[18px] px-1 bg-neutral-950 text-white dark:bg-white dark:text-black text-[10px] font-extrabold rounded-full flex items-center justify-center">
+                <span
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="absolute -top-1 -right-2 min-w-[18px] h-[18px] px-1 bg-neutral-950 text-white dark:bg-white dark:text-black text-[10px] font-extrabold rounded-full flex items-center justify-center"
+                >
                   {cartCount}
                 </span>
               )}

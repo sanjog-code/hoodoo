@@ -11,7 +11,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onBackToCatalog }) => {
       {/* Return to Catalog */}
       <button
         onClick={onBackToCatalog}
-        className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-neutral-500 hover:text-neutral-950 dark:hover:text-white uppercase transition-colors mb-12"
+        className="inline-flex items-center gap-2 text-xs font-bold tracking-wider text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white uppercase transition-colors mb-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>BACK TO CATALOG</span>
@@ -98,7 +98,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onBackToCatalog }) => {
         </span>
         <button
           onClick={onBackToCatalog}
-          className="px-6 py-3 bg-neutral-950 hover:bg-black text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all"
+          className="px-6 py-3 bg-neutral-950 hover:bg-black text-white dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 rounded-full text-xs font-extrabold uppercase tracking-wider transition-all active:translate-y-[1px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
         >
           EXPLORE GEAR
         </button>
