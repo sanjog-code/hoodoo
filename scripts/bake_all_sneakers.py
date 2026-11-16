@@ -171,7 +171,8 @@ for pid, cfg in sneaker_configs.items():
     create_masterpiece_skate_sneaker(dest_path, color_profile=cfg['profile'])
     
     # Mirror to public/assets/models
-    asset_dest = os.path.join(out_dirs[1], model_name)
+    asset_dest = os.path.normpath(os.path.join(out_dirs[1], model_name))
+    dest_path = os.path.normpath(dest_path)
     shutil.copyfile(dest_path, asset_dest)
     print(f"  Mirrored to: {asset_dest}")
     
