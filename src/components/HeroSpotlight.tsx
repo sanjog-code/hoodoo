@@ -164,9 +164,8 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
           
           {/* Category & Badge */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              ARCHIVE DROP // {currentProduct.category}
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono">
+              ARCHIVE • {currentProduct.category}
             </span>
             <span className="text-neutral-600">•</span>
             <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-neutral-900 border border-neutral-700/80 text-neutral-200">
@@ -298,14 +297,13 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
 
       </div>
 
-      {/* Curated Capsule Drops: Interactive Archival Silhouette Switcher */}
+      {/* Curated Capsule Collection: Interactive Archival Silhouette Switcher */}
       <div className="mt-12 pt-8 border-t border-neutral-200/80 dark:border-neutral-800/80">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[11px] font-bold tracking-widest text-neutral-700 dark:text-neutral-300 uppercase font-mono">
-                LIMITED CAPSULE DROPS // 4 ICONIC SILHOUETTES
+                ARCHIVAL COLLECTION • 4 ICONIC SILHOUETTES
               </span>
             </div>
             <h3 className="text-base sm:text-lg font-black uppercase tracking-tight text-neutral-950 dark:text-white font-display">
@@ -319,9 +317,8 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
 
         {/* 4 Rich Silhouette Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[FEATURED_HERO, ...THUMBNAIL_PRODUCTS].map((prod, index) => {
+          {[FEATURED_HERO, ...THUMBNAIL_PRODUCTS].map((prod) => {
             const isSelected = prod.id === currentProduct.id;
-            const dropTag = `DROP 0${index + 1}`;
             return (
               <button
                 key={prod.id}
@@ -329,39 +326,46 @@ export const HeroSpotlight: React.FC<HeroSpotlightProps> = ({
                 aria-pressed={isSelected}
                 className={`group text-left p-3.5 rounded-2xl border transition-all duration-200 relative flex items-center gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
                   isSelected
-                    ? 'bg-neutral-100/90 dark:bg-neutral-850/90 border-neutral-950 dark:border-white shadow-lg ring-1 ring-neutral-950 dark:ring-white'
-                    : 'bg-white/40 dark:bg-neutral-900/40 border-neutral-200/60 dark:border-neutral-800/60 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-white dark:hover:bg-neutral-900/80'
+                    ? 'bg-white text-black border-white shadow-xl ring-2 ring-white'
+                    : 'bg-white/40 dark:bg-neutral-900/40 text-neutral-900 dark:text-neutral-100 border-neutral-200/60 dark:border-neutral-800/60 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-white dark:hover:bg-neutral-900/80'
                 }`}
                 aria-label={`Select ${prod.name}`}
               >
-                {/* Product Thumbnail with Studio Gradient */}
-                <div className="relative w-16 h-16 sm:w-18 sm:h-18 flex-shrink-0 rounded-xl overflow-hidden bg-neutral-200/50 dark:bg-neutral-800/50 p-1 flex items-center justify-center">
+                {/* Product Thumbnail */}
+                <div className={`relative w-16 h-16 sm:w-18 sm:h-18 flex-shrink-0 rounded-xl overflow-hidden p-1 flex items-center justify-center transition-colors ${
+                  isSelected ? 'bg-neutral-100' : 'bg-neutral-200/50 dark:bg-neutral-800/50'
+                }`}>
                   <img
                     src={prod.image}
                     alt={prod.name}
                     className="w-full h-full object-contain transition-opacity duration-200 group-hover:opacity-90 drop-shadow-sm"
                   />
-                  {isSelected && (
-                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-neutral-900" />
-                  )}
                 </div>
 
                 {/* Product Metadata */}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-1 mb-0.5">
-                    <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-600 dark:text-neutral-400">
-                      {dropTag}
+                    <span className={`text-[10px] font-mono font-bold tracking-widest uppercase ${
+                      isSelected ? 'text-neutral-700' : 'text-neutral-600 dark:text-neutral-400'
+                    }`}>
+                      {prod.category}
                     </span>
-                    <span className="text-xs font-mono font-bold text-neutral-950 dark:text-white">
+                    <span className={`text-xs font-mono font-bold ${
+                      isSelected ? 'text-black' : 'text-neutral-950 dark:text-white'
+                    }`}>
                       ${prod.price}
                     </span>
                   </div>
-                  <h4 className="text-xs sm:text-[13px] font-bold uppercase tracking-tight text-neutral-950 dark:text-white truncate font-display">
+                  <h4 className={`text-xs sm:text-[13px] font-bold uppercase tracking-tight truncate font-display ${
+                    isSelected ? 'text-black' : 'text-neutral-950 dark:text-white'
+                  }`}>
                     {prod.name}
                   </h4>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-mono text-neutral-600 dark:text-neutral-400">
-                      {isSelected ? '✓ ACTIVE IN 3D' : 'TAP TO LOAD'}
+                    <span className={`text-[10px] font-mono font-medium ${
+                      isSelected ? 'text-neutral-800' : 'text-neutral-600 dark:text-neutral-400'
+                    }`}>
+                      {prod.swatches?.length || 2} Colorways
                     </span>
                   </div>
                 </div>

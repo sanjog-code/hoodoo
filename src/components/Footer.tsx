@@ -39,20 +39,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
             </p>
             <div className="pt-2 max-w-sm">
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-neutral-500 block mb-2 font-mono">
-                LOCK IN FOR PRIVATE BLOCK DROPS
+                LOCK IN FOR PRIVATE ARCHIVE RELEASES
               </span>
               <form onSubmit={handleSubscribe} className="relative flex items-center">
                 <input
                   type="email"
                   required
-                  placeholder="Drop your email here"
+                  placeholder="Enter your email here"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-transparent border-b border-neutral-400 dark:border-neutral-700 pb-2 text-xs text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 outline-none focus:border-neutral-950 dark:focus:border-white transition-colors"
                 />
                 <button
                   type="submit"
-                  aria-label="Subscribe to drop list"
+                  aria-label="Subscribe to archive newsletter"
                   className="absolute right-0 bottom-2 text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white transition-colors p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 rounded-sm"
                 >
                   {subscribed ? (

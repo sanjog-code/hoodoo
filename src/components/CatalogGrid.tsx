@@ -236,11 +236,11 @@ export const CatalogGrid: React.FC<CatalogGridProps> = ({
               <input
                 type="text"
                 role="searchbox"
-                placeholder="Search drop or cut..."
+                placeholder="Search piece or cut..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 rounded-full text-xs bg-neutral-200/60 dark:bg-neutral-800/60 outline-none text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-400 transition-colors font-mono"
-                aria-label="Search catalog for drop or cut"
+                aria-label="Search catalog for piece or cut"
               />
               {searchQuery && (
                 <button
