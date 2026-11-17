@@ -34,9 +34,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, palette = 'cobalt' }
             >
               <HoodooLogo size="md" palette={palette} />
             </button>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-sm leading-relaxed">
-              Brutal 500GSM heavyweight street armor forged in Los Angeles. Old English typography, lowrider pinstripes, and raw bandana cuts.
-            </p>
+            <div className="space-y-1 max-w-sm">
+              <p className="text-base font-bold tracking-tight text-neutral-950 dark:text-white font-display">
+                Heavyweight by conviction.
+              </p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-snug">
+                Substance over hype. Architectural drape. Built for the concrete.
+              </p>
+              <p className="text-xs font-mono uppercase tracking-wider text-neutral-500 pt-1">
+                Engineered in Los Angeles.
+              </p>
+            </div>
             <div className="pt-2 max-w-sm">
               <span className="text-[11px] font-extrabold uppercase tracking-widest text-neutral-500 block mb-2 font-mono">
                 LOCK IN FOR PRIVATE ARCHIVE RELEASES
