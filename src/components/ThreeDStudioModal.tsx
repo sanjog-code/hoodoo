@@ -6,6 +6,8 @@ import { X, RotateCw, Camera, Sparkles, Move3d } from 'lucide-react';
 import type { Product, Swatch } from '../types';
 import { FEATURED_HERO, CATALOG_PRODUCTS } from '../data/products';
 import { BrandPalette, PALETTES } from './HoodooLogo';
+import { buildProceduralSneaker, applyPaletteToProceduralSneaker } from '../lib/ProceduralSneaker';
+import type { SneakerPalette } from '../lib/ProceduralSneaker';
 
 interface ThreeDStudioModalProps {
   isOpen: boolean;
@@ -202,31 +204,50 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     setIsLoading(true);
     const modelPath = activeProduct.model3d || '/assets/models/hoodie_master.glb';
     const isKicks = activeProduct.category === 'kicks' || modelPath.includes('kicks');
-    const loader = new GLTFLoader();
 
-    loader.load(
-      modelPath,
-      (gltf) => {
-        // Remove prior model if exists
-        if (currentModelGroupRef.current && sceneRef.current) {
-          sceneRef.current.remove(currentModelGroupRef.current);
-        }
+    // Remove prior model if exists
+    if (currentModelGroupRef.current && sceneRef.current) {
+      sceneRef.current.remove(currentModelGroupRef.current);
+      currentModelGroupRef.current = null;
+    }
 
-        const model = gltf.scene;
-        model.position.set(0, 0, 0);
-        model.rotation.y = 0; // Forward facing towards camera at +Z
+    if (isKicks) {
+      // ─── Use high-detail procedural sneaker geometry ───
+      const currentSwatch = activeProduct.swatches?.find((s) => s.name === activeColor) || activeProduct.swatches?.[0];
+      const kicksPalette = resolveKicksPalette(activeProduct, currentSwatch);
+      const sneakerGroup = buildProceduralSneaker(kicksPalette);
+      
+      sneakerGroup.scale.set(1.6, 1.6, 1.6);
+      sneakerGroup.position.set(0, -0.08, 0);
+      sneakerGroup.rotation.y = -0.4; // Slight 3/4 angle for hero presentation
 
-        if (isKicks) {
-          model.scale.set(1.35, 1.35, 1.35);
-          if (cameraRef.current && controlsRef.current) {
-            cameraRef.current.position.set(0, 0.24, 1.15);
-            controlsRef.current.target.set(0, 0.04, 0);
-            controlsRef.current.minDistance = 0.5;
-            controlsRef.current.maxDistance = 2.5;
-            controlsRef.current.update();
+      if (cameraRef.current && controlsRef.current) {
+        cameraRef.current.position.set(0.4, 0.28, 0.9);
+        controlsRef.current.target.set(0, 0.08, 0);
+        controlsRef.current.minDistance = 0.4;
+        controlsRef.current.maxDistance = 2.5;
+        controlsRef.current.update();
+      }
+
+      sceneRef.current.add(sneakerGroup);
+      currentModelGroupRef.current = sneakerGroup;
+      fabricMeshRef.current = null;
+      setIsLoading(false);
+    } else {
+      // ─── Load GLB for hoodies and tees ───
+      const loader = new GLTFLoader();
+      loader.load(
+        modelPath,
+        (gltf) => {
+          if (currentModelGroupRef.current && sceneRef.current) {
+            sceneRef.current.remove(currentModelGroupRef.current);
           }
-        } else {
+
+          const model = gltf.scene;
+          model.position.set(0, 0, 0);
+          model.rotation.y = 0;
           model.scale.set(1.15, 1.15, 1.15);
+
           if (cameraRef.current && controlsRef.current) {
             cameraRef.current.position.set(0, 0.08, 2.2);
             controlsRef.current.target.set(0, -0.05, 0);
@@ -234,44 +255,42 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
             controlsRef.current.maxDistance = 4.0;
             controlsRef.current.update();
           }
-        }
 
-        // Identify parts
-        fabricMeshRef.current = null;
+          // Identify fabric mesh for texture mapping
+          fabricMeshRef.current = null;
+          model.traverse((child) => {
+            if ((child as THREE.Mesh).isMesh) {
+              const mesh = child as THREE.Mesh;
+              mesh.castShadow = true;
+              mesh.receiveShadow = true;
 
-        model.traverse((child) => {
-          if ((child as THREE.Mesh).isMesh) {
-            const mesh = child as THREE.Mesh;
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-
-            const name = mesh.name.toLowerCase();
-            if (
-              name.includes('hoodie') ||
-              name.includes('tee') ||
-              name.includes('sneaker') ||
-              name.includes('upper') ||
-              name.includes('fabric') ||
-              name.includes('body')
-            ) {
-              fabricMeshRef.current = mesh;
+              const name = mesh.name.toLowerCase();
+              if (
+                name.includes('hoodie') ||
+                name.includes('tee') ||
+                name.includes('upper') ||
+                name.includes('fabric') ||
+                name.includes('body')
+              ) {
+                fabricMeshRef.current = mesh;
+              }
             }
-          }
-        });
+          });
 
-        sceneRef.current?.add(model);
-        currentModelGroupRef.current = model;
-        setIsLoading(false);
+          sceneRef.current?.add(model);
+          currentModelGroupRef.current = model;
+          setIsLoading(false);
 
-        // Immediately apply active colorway texture atlas
-        applyActiveColorway();
-      },
-      undefined,
-      (err) => {
-        console.error('Error loading 3D model:', err);
-        setIsLoading(false);
-      }
-    );
+          // Immediately apply active colorway texture atlas
+          applyActiveColorway();
+        },
+        undefined,
+        (err) => {
+          console.error('Error loading 3D model:', err);
+          setIsLoading(false);
+        }
+      );
+    }
   }, [activeProduct.id, isOpen]);
 
   // Helper to resolve the correct 2048x2048 dual-panel texture atlas
@@ -331,76 +350,60 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     };
   };
 
+  // ─── Kicks Palette Resolver (shared between model loading & colorway switching) ───
+  const KICKS_PALETTES: Record<string, Record<string, SneakerPalette>> = {
+    'wc-cat-9': {
+      'Bone & Black Paisley': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#140b06', laces: '#ffffff', silver: '#e8ecf4' },
+      'Triple Obsidian': { sole: '#171717', upper: '#121214', suede: '#09090b', laces: '#1c1c1f', silver: '#52525b' },
+      'Raw Cocoa & Gum': { sole: '#b86e32', upper: '#5c4033', suede: '#27160c', laces: '#f5f5f4', silver: '#d4af37' },
+    },
+    'wc-cat-10': {
+      'Stealth Noir': { sole: '#1a1a1c', upper: '#121214', suede: '#0a0a0c', laces: '#1c1c1f', silver: '#71717a' },
+      'Moonrock Grey': { sole: '#e4e4e7', upper: '#52525b', suede: '#27272a', laces: '#d4d4d8', silver: '#e4e4e7' },
+      'Onyx & Bone': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#18181b', laces: '#ffffff', silver: '#e8ecf4' },
+    },
+    'wc-cat-11': {
+      'Chocolate Suede': { sole: '#b86e32', upper: '#52341f', suede: '#26160d', laces: '#f5f5dc', silver: '#e8ecf4' },
+      'Jet Suede': { sole: '#1a1a1a', upper: '#1c1917', suede: '#0c0a09', laces: '#262626', silver: '#71717a' },
+      'Moss Green Suede': { sole: '#b86e32', upper: '#3f4e42', suede: '#1c261e', laces: '#d1d5db', silver: '#e8ecf4' },
+    },
+    'wc-cat-12': {
+      'Sail & Midnight Paisley': { sole: '#e0d5c1', upper: '#fafaf9', suede: '#1e293b', laces: '#ede8dc', silver: '#e8ecf4' },
+      'Obsidian & Crimson': { sole: '#171717', upper: '#18181b', suede: '#881337', laces: '#e11d48', silver: '#e8ecf4' },
+      'Khaki & Brown': { sole: '#bd7a40', upper: '#d6d3d1', suede: '#451a03', laces: '#e7e5e4', silver: '#e8ecf4' },
+    },
+    'wc-cat-16': {
+      'Obsidian Canvas': { sole: '#b86e32', upper: '#18181b', suede: '#09090b', laces: '#ffffff', silver: '#e8ecf4' },
+      'Off-White Raw Duck': { sole: '#b86e32', upper: '#f5f5f4', suede: '#d6d3d1', laces: '#fafaf9', silver: '#e8ecf4' },
+      'Navy Blue Heavyweight': { sole: '#b86e32', upper: '#1e3a8a', suede: '#0f172a', laces: '#ffffff', silver: '#e8ecf4' },
+    },
+  };
+
+  const resolveKicksPalette = (product: Product, swatch?: Swatch | null): SneakerPalette => {
+    const prodPalettes = KICKS_PALETTES[product.id];
+    if (prodPalettes && swatch?.name && prodPalettes[swatch.name]) {
+      return prodPalettes[swatch.name];
+    }
+    return {
+      sole: '#bd7a40',
+      upper: swatch?.color || '#e7e5e4',
+      suede: '#140b06',
+      laces: '#ffffff',
+      silver: '#e8ecf4',
+    };
+  };
+
   // Real-time Dynamic Direct UV Texture Mapping & Dynamic Kicks Material Tinting
   const applyActiveColorway = () => {
     const currentSwatch =
       activeProduct.swatches?.find((s) => s.name === activeColor) ||
       activeProduct.swatches?.[0];
 
-    // DYNAMIC SNEAKER COLORWAY TINTING (Precision multi-material PBR recoloring)
+    // PROCEDURAL SNEAKER COLORWAY RECOLORING (instant material uniform update)
     if (activeProduct.category === 'kicks' || (activeProduct.model3d || '').includes('kicks')) {
       if (!currentModelGroupRef.current) return;
-
-      const KICKS_PALETTES: Record<string, Record<string, { sole: string; upper: string; suede: string; laces: string; silver: string }>> = {
-        'wc-cat-9': {
-          'Bone & Black Paisley': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#140b06', laces: '#ffffff', silver: '#e8ecf4' },
-          'Triple Obsidian': { sole: '#171717', upper: '#121214', suede: '#09090b', laces: '#1c1c1f', silver: '#52525b' },
-          'Raw Cocoa & Gum': { sole: '#b86e32', upper: '#5c4033', suede: '#27160c', laces: '#f5f5f4', silver: '#d4af37' },
-        },
-        'wc-cat-10': {
-          'Stealth Noir': { sole: '#1a1a1c', upper: '#121214', suede: '#0a0a0c', laces: '#1c1c1f', silver: '#71717a' },
-          'Moonrock Grey': { sole: '#e4e4e7', upper: '#52525b', suede: '#27272a', laces: '#d4d4d8', silver: '#e4e4e7' },
-          'Onyx & Bone': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#18181b', laces: '#ffffff', silver: '#e8ecf4' },
-        },
-        'wc-cat-11': {
-          'Chocolate Suede': { sole: '#b86e32', upper: '#52341f', suede: '#26160d', laces: '#f5f5dc', silver: '#e8ecf4' },
-          'Jet Suede': { sole: '#1a1a1a', upper: '#1c1917', suede: '#0c0a09', laces: '#262626', silver: '#71717a' },
-          'Moss Green Suede': { sole: '#b86e32', upper: '#3f4e42', suede: '#1c261e', laces: '#d1d5db', silver: '#e8ecf4' },
-        },
-        'wc-cat-12': {
-          'Sail & Midnight Paisley': { sole: '#e0d5c1', upper: '#fafaf9', suede: '#1e293b', laces: '#ede8dc', silver: '#e8ecf4' },
-          'Obsidian & Crimson': { sole: '#171717', upper: '#18181b', suede: '#881337', laces: '#e11d48', silver: '#e8ecf4' },
-          'Khaki & Brown': { sole: '#bd7a40', upper: '#d6d3d1', suede: '#451a03', laces: '#e7e5e4', silver: '#e8ecf4' },
-        },
-        'wc-cat-16': {
-          'Obsidian Canvas': { sole: '#b86e32', upper: '#18181b', suede: '#09090b', laces: '#ffffff', silver: '#e8ecf4' },
-          'Off-White Raw Duck': { sole: '#b86e32', upper: '#f5f5f4', suede: '#d6d3d1', laces: '#fafaf9', silver: '#e8ecf4' },
-          'Navy Blue Heavyweight': { sole: '#b86e32', upper: '#1e3a8a', suede: '#0f172a', laces: '#ffffff', silver: '#e8ecf4' },
-        },
-      };
-
-      const prodPalettes = KICKS_PALETTES[activeProduct.id];
-      const palette = (prodPalettes && currentSwatch?.name && prodPalettes[currentSwatch.name]) || {
-        sole: '#bd7a40',
-        upper: currentSwatch?.color || '#e7e5e4',
-        suede: '#140b06',
-        laces: '#ffffff',
-        silver: '#e8ecf4',
-      };
-
-      currentModelGroupRef.current.traverse((child) => {
-        if ((child as THREE.Mesh).isMesh) {
-          const mesh = child as THREE.Mesh;
-          const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          materials.forEach((m) => {
-            const stdMat = m as THREE.MeshStandardMaterial;
-            if (!stdMat || !stdMat.name) return;
-            const matName = stdMat.name;
-            if (matName.includes('Sole')) {
-              stdMat.color.set(palette.sole);
-            } else if (matName.includes('Upper')) {
-              stdMat.color.set(palette.upper);
-            } else if (matName.includes('Suede')) {
-              stdMat.color.set(palette.suede);
-            } else if (matName.includes('Laces')) {
-              stdMat.color.set(palette.laces);
-            } else if (matName.includes('Chrome')) {
-              stdMat.color.set(palette.silver);
-            }
-            // Do NOT trigger expensive shader program recompile when updating uniform colors!
-          });
-        }
-      });
+      const kicksPalette = resolveKicksPalette(activeProduct, currentSwatch);
+      applyPaletteToProceduralSneaker(currentModelGroupRef.current, kicksPalette);
       return;
     }
 
@@ -507,17 +510,17 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
 
     if (isKicks) {
       if (view === 'front') {
-        cam.position.set(0, 0.22, 1.10);
-        ctrl.target.set(0, 0.04, 0);
+        cam.position.set(0.65, 0.20, 0.55);
+        ctrl.target.set(0, 0.08, 0);
       } else if (view === 'back') {
-        cam.position.set(0, 0.22, -1.10);
-        ctrl.target.set(0, 0.04, 0);
+        cam.position.set(0, 0.22, -0.90);
+        ctrl.target.set(0, 0.08, 0);
       } else if (view === 'angle') {
-        cam.position.set(0.85, 0.35, 0.85);
-        ctrl.target.set(0, 0.04, 0);
+        cam.position.set(0.75, 0.32, 0.75);
+        ctrl.target.set(0, 0.08, 0);
       } else if (view === 'close') {
-        cam.position.set(0, 0.15, 0.65);
-        ctrl.target.set(0, 0.04, 0);
+        cam.position.set(0.38, 0.22, 0.42);
+        ctrl.target.set(0, 0.12, 0.05);
       }
     } else {
       if (view === 'front') {
