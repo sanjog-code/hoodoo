@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { HeroSpotlight } from './components/HeroSpotlight';
 import { CatalogGrid } from './components/CatalogGrid';
+import { EditorialLookbook } from './components/EditorialLookbook';
 import { ThreeDStudioModal } from './components/ThreeDStudioModal';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
@@ -136,7 +137,13 @@ export function App() {
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#f5f5f4] dark:bg-[#0a0a0c] text-neutral-900 dark:text-neutral-100 transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-[#f5f5f4] dark:bg-[#0a0a0c] text-neutral-900 dark:text-neutral-100 transition-colors duration-200 relative">
+      {/* Subtle Analog 35mm Tactile Film Grain Overlay */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay"
+        style={{ backgroundImage: 'url(/assets/grain.svg)', backgroundRepeat: 'repeat' }}
+        aria-hidden="true"
+      />
       {/* Skip to Main Content Landmark for A11y */}
       <a
         href="#main-content"
@@ -183,6 +190,7 @@ export function App() {
               onOpen3D={(p) => handleOpen3D(p)}
               palette={palette}
             />
+            <EditorialLookbook />
           </>
         )}
 

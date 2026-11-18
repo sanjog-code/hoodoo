@@ -91,6 +91,79 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onBackToCatalog }) => {
 
       </div>
 
+      {/* Editorial Street Photography Gallery */}
+      <div className="mt-16 pt-12 border-t border-neutral-200/60 dark:border-neutral-800/60">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-500 uppercase">
+              FIELD NOTES • 35MM ARCHIVE
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-neutral-950 dark:text-white font-display mt-1">
+              THE CONCRETE ENVIRONMENT
+            </h3>
+          </div>
+          <span className="text-xs font-mono text-neutral-500 hidden sm:inline">
+            LOS ANGELES, CA
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="group relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800/80 aspect-[4/5]">
+            <img
+              src="/assets/editorial_graded/la_street_shadows.webp"
+              alt="Los Angeles architectural shadows and concrete urban texture"
+              loading="lazy"
+              className="w-full h-full object-cover filter grayscale contrast-125 transition-transform duration-500 group-hover:scale-105 opacity-85"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-300 block uppercase">
+                WHITTIER BLVD OVERPASS
+              </span>
+              <span className="text-[10px] font-mono text-neutral-500">
+                34°01'N 118°11'W • Shadow Study
+              </span>
+            </div>
+          </div>
+
+          <div className="group relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800/80 aspect-[4/5]">
+            <img
+              src="/assets/editorial_graded/raw_heavyweight_denim_cotton.webp"
+              alt="Raw heavyweight combed cotton texture and structural drape"
+              loading="lazy"
+              className="w-full h-full object-cover filter grayscale contrast-125 transition-transform duration-500 group-hover:scale-105 opacity-85"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-300 block uppercase">
+                500GSM LOOM TELEMETRY
+              </span>
+              <span className="text-[10px] font-mono text-neutral-500">
+                100% Combed Cotton • Unshrunk
+              </span>
+            </div>
+          </div>
+
+          <div className="group relative rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800/80 aspect-[4/5]">
+            <img
+              src="/assets/editorial_graded/dark_monochrome_portrait.webp"
+              alt="Streetwear portrait with heavy cotton hoodie and dark aesthetic"
+              loading="lazy"
+              className="w-full h-full object-cover filter grayscale contrast-125 transition-transform duration-500 group-hover:scale-105 opacity-85"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <span className="text-[10px] font-mono font-bold tracking-widest text-neutral-300 block uppercase">
+                ATELIER CASTING
+              </span>
+              <span className="text-[10px] font-mono text-neutral-500">
+                Downtown LA Studio • 50mm f/1.4
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Return CTA */}
       <div className="mt-20 pt-10 border-t border-neutral-200/60 dark:border-neutral-800/60 flex justify-between items-center">
         <span className="text-xs text-neutral-400 uppercase tracking-widest font-mono">
