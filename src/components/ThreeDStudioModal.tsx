@@ -6,8 +6,6 @@ import { X, RotateCw, Camera, Sparkles, Move3d } from 'lucide-react';
 import type { Product, Swatch } from '../types';
 import { FEATURED_HERO, CATALOG_PRODUCTS } from '../data/products';
 import { BrandPalette, PALETTES } from './HoodooLogo';
-import { buildProceduralSneaker, applyPaletteToProceduralSneaker } from '../lib/ProceduralSneaker';
-import type { SneakerPalette } from '../lib/ProceduralSneaker';
 
 interface ThreeDStudioModalProps {
   isOpen: boolean;
@@ -16,6 +14,11 @@ interface ThreeDStudioModalProps {
   initialColor?: string;
   palette?: BrandPalette;
 }
+
+// Module-level caches for zero-latency colorway swapping and asset deduplication
+const textureCache = new Map<string, THREE.Texture>();
+let sharedKicksNormal: THREE.Texture | null = null;
+let sharedKicksRoughness: THREE.Texture | null = null;
 
 export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
   isOpen,
@@ -56,6 +59,8 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const currentModelGroupRef = useRef<THREE.Group | null>(null);
   const fabricMeshRef = useRef<THREE.Mesh | null>(null);
+  const floorRef = useRef<THREE.Mesh | null>(null);
+  const pedestalRef = useRef<THREE.Mesh | null>(null);
 
   // Sync when initial product opens
   useEffect(() => {
@@ -138,6 +143,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     floorMesh.position.y = -1.12;
     floorMesh.receiveShadow = true;
     scene.add(floorMesh);
+    floorRef.current = floorMesh;
 
     // Ground Circular Radial Museum Pedestal
     const pedestalGeo = new THREE.CylinderGeometry(0.85, 0.90, 0.03, 64);
@@ -150,6 +156,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     pedestal.position.y = -1.13;
     pedestal.receiveShadow = true;
     scene.add(pedestal);
+    pedestalRef.current = pedestal;
 
     // 6. Animation Loop
     let animationFrameId: number;
@@ -211,42 +218,38 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       currentModelGroupRef.current = null;
     }
 
-    if (isKicks) {
-      // ─── Use high-detail procedural sneaker geometry ───
-      const currentSwatch = activeProduct.swatches?.find((s) => s.name === activeColor) || activeProduct.swatches?.[0];
-      const kicksPalette = resolveKicksPalette(activeProduct, currentSwatch);
-      const sneakerGroup = buildProceduralSneaker(kicksPalette);
-      
-      sneakerGroup.scale.set(1.6, 1.6, 1.6);
-      sneakerGroup.position.set(0, -0.08, 0);
-      sneakerGroup.rotation.y = -0.4; // Slight 3/4 angle for hero presentation
+    const loader = new GLTFLoader();
+    loader.load(
+      modelPath,
+      (gltf) => {
+        if (currentModelGroupRef.current && sceneRef.current) {
+          sceneRef.current.remove(currentModelGroupRef.current);
+        }
 
-      if (cameraRef.current && controlsRef.current) {
-        cameraRef.current.position.set(0.4, 0.28, 0.9);
-        controlsRef.current.target.set(0, 0.08, 0);
-        controlsRef.current.minDistance = 0.4;
-        controlsRef.current.maxDistance = 2.5;
-        controlsRef.current.update();
-      }
+        const model = gltf.scene;
 
-      sceneRef.current.add(sneakerGroup);
-      currentModelGroupRef.current = sneakerGroup;
-      fabricMeshRef.current = null;
-      setIsLoading(false);
-    } else {
-      // ─── Load GLB for hoodies and tees ───
-      const loader = new GLTFLoader();
-      loader.load(
-        modelPath,
-        (gltf) => {
-          if (currentModelGroupRef.current && sceneRef.current) {
-            sceneRef.current.remove(currentModelGroupRef.current);
+        if (isKicks) {
+          model.scale.set(3.4, 3.4, 3.4);
+          model.position.set(0, -0.06, 0);
+          model.rotation.y = -Math.PI / 4; // 3/4 hero presentation angle
+
+          if (floorRef.current) floorRef.current.position.y = -0.32;
+          if (pedestalRef.current) pedestalRef.current.position.y = -0.33;
+
+          if (cameraRef.current && controlsRef.current) {
+            cameraRef.current.position.set(0.65, 0.38, 0.95);
+            controlsRef.current.target.set(0, 0.05, 0);
+            controlsRef.current.minDistance = 0.35;
+            controlsRef.current.maxDistance = 2.5;
+            controlsRef.current.update();
           }
-
-          const model = gltf.scene;
+        } else {
+          model.scale.set(1.15, 1.15, 1.15);
           model.position.set(0, 0, 0);
           model.rotation.y = 0;
-          model.scale.set(1.15, 1.15, 1.15);
+
+          if (floorRef.current) floorRef.current.position.y = -1.12;
+          if (pedestalRef.current) pedestalRef.current.position.y = -1.13;
 
           if (cameraRef.current && controlsRef.current) {
             cameraRef.current.position.set(0, 0.08, 2.2);
@@ -255,42 +258,32 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
             controlsRef.current.maxDistance = 4.0;
             controlsRef.current.update();
           }
-
-          // Identify fabric mesh for texture mapping
-          fabricMeshRef.current = null;
-          model.traverse((child) => {
-            if ((child as THREE.Mesh).isMesh) {
-              const mesh = child as THREE.Mesh;
-              mesh.castShadow = true;
-              mesh.receiveShadow = true;
-
-              const name = mesh.name.toLowerCase();
-              if (
-                name.includes('hoodie') ||
-                name.includes('tee') ||
-                name.includes('upper') ||
-                name.includes('fabric') ||
-                name.includes('body')
-              ) {
-                fabricMeshRef.current = mesh;
-              }
-            }
-          });
-
-          sceneRef.current?.add(model);
-          currentModelGroupRef.current = model;
-          setIsLoading(false);
-
-          // Immediately apply active colorway texture atlas
-          applyActiveColorway();
-        },
-        undefined,
-        (err) => {
-          console.error('Error loading 3D model:', err);
-          setIsLoading(false);
         }
-      );
-    }
+
+        // Identify main mesh for PBR texture mapping
+        fabricMeshRef.current = null;
+        model.traverse((child) => {
+          if ((child as THREE.Mesh).isMesh) {
+            const mesh = child as THREE.Mesh;
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            fabricMeshRef.current = mesh;
+          }
+        });
+
+        sceneRef.current?.add(model);
+        currentModelGroupRef.current = model;
+        setIsLoading(false);
+
+        // Immediately apply active colorway texture atlas
+        applyActiveColorway();
+      },
+      undefined,
+      (err) => {
+        console.error('Error loading 3D model:', err);
+        setIsLoading(false);
+      }
+    );
   }, [activeProduct.id, isOpen]);
 
   // Helper to resolve the correct 2048x2048 dual-panel texture atlas
@@ -350,68 +343,18 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
     };
   };
 
-  // ─── Kicks Palette Resolver (shared between model loading & colorway switching) ───
-  const KICKS_PALETTES: Record<string, Record<string, SneakerPalette>> = {
-    'wc-cat-9': {
-      'Bone & Black Paisley': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#140b06', laces: '#ffffff', silver: '#e8ecf4' },
-      'Triple Obsidian': { sole: '#171717', upper: '#121214', suede: '#09090b', laces: '#1c1c1f', silver: '#52525b' },
-      'Raw Cocoa & Gum': { sole: '#b86e32', upper: '#5c4033', suede: '#27160c', laces: '#f5f5f4', silver: '#d4af37' },
-    },
-    'wc-cat-10': {
-      'Stealth Noir': { sole: '#1a1a1c', upper: '#121214', suede: '#0a0a0c', laces: '#1c1c1f', silver: '#71717a' },
-      'Moonrock Grey': { sole: '#e4e4e7', upper: '#52525b', suede: '#27272a', laces: '#d4d4d8', silver: '#e4e4e7' },
-      'Onyx & Bone': { sole: '#bd7a40', upper: '#e7e5e4', suede: '#18181b', laces: '#ffffff', silver: '#e8ecf4' },
-    },
-    'wc-cat-11': {
-      'Chocolate Suede': { sole: '#b86e32', upper: '#52341f', suede: '#26160d', laces: '#f5f5dc', silver: '#e8ecf4' },
-      'Jet Suede': { sole: '#1a1a1a', upper: '#1c1917', suede: '#0c0a09', laces: '#262626', silver: '#71717a' },
-      'Moss Green Suede': { sole: '#b86e32', upper: '#3f4e42', suede: '#1c261e', laces: '#d1d5db', silver: '#e8ecf4' },
-    },
-    'wc-cat-12': {
-      'Sail & Midnight Paisley': { sole: '#e0d5c1', upper: '#fafaf9', suede: '#1e293b', laces: '#ede8dc', silver: '#e8ecf4' },
-      'Obsidian & Crimson': { sole: '#171717', upper: '#18181b', suede: '#881337', laces: '#e11d48', silver: '#e8ecf4' },
-      'Khaki & Brown': { sole: '#bd7a40', upper: '#d6d3d1', suede: '#451a03', laces: '#e7e5e4', silver: '#e8ecf4' },
-    },
-    'wc-cat-16': {
-      'Obsidian Canvas': { sole: '#b86e32', upper: '#18181b', suede: '#09090b', laces: '#ffffff', silver: '#e8ecf4' },
-      'Off-White Raw Duck': { sole: '#b86e32', upper: '#f5f5f4', suede: '#d6d3d1', laces: '#fafaf9', silver: '#e8ecf4' },
-      'Navy Blue Heavyweight': { sole: '#b86e32', upper: '#1e3a8a', suede: '#0f172a', laces: '#ffffff', silver: '#e8ecf4' },
-    },
-  };
-
-  const resolveKicksPalette = (product: Product, swatch?: Swatch | null): SneakerPalette => {
-    const prodPalettes = KICKS_PALETTES[product.id];
-    if (prodPalettes && swatch?.name && prodPalettes[swatch.name]) {
-      return prodPalettes[swatch.name];
-    }
-    return {
-      sole: '#bd7a40',
-      upper: swatch?.color || '#e7e5e4',
-      suede: '#140b06',
-      laces: '#ffffff',
-      silver: '#e8ecf4',
-    };
-  };
-
   // Real-time Dynamic Direct UV Texture Mapping & Dynamic Kicks Material Tinting
   const applyActiveColorway = () => {
     const currentSwatch =
       activeProduct.swatches?.find((s) => s.name === activeColor) ||
       activeProduct.swatches?.[0];
 
-    // PROCEDURAL SNEAKER COLORWAY RECOLORING (instant material uniform update)
-    if (activeProduct.category === 'kicks' || (activeProduct.model3d || '').includes('kicks')) {
-      if (!currentModelGroupRef.current) return;
-      const kicksPalette = resolveKicksPalette(activeProduct, currentSwatch);
-      applyPaletteToProceduralSneaker(currentModelGroupRef.current, kicksPalette);
-      return;
-    }
-
     if (!fabricMeshRef.current) return;
 
     const mat = fabricMeshRef.current.material as THREE.MeshStandardMaterial;
     if (!mat) return;
 
+    const isKicks = activeProduct.category === 'kicks' || (activeProduct.model3d || '').includes('kicks');
     const { atlasUrl, fallbackUrl } = getTextureAtlasUrl(
       activeProduct.model3d,
       currentSwatch?.name || activeColor
@@ -419,6 +362,94 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
 
     const textureLoader = new THREE.TextureLoader();
     const maxAniso = rendererRef.current?.capabilities.getMaxAnisotropy() || 16;
+
+    if (isKicks) {
+      // ─── Apply Photorealistic Sneaker PBR Maps (Diffuse, Normal, Roughness) ───
+      const normalUrl = '/assets/models/shoe_textures/normal.jpg.jpg';
+      const roughtUrl = '/assets/models/shoe_textures/occlusionRougnessMetalness.jpg.jpg';
+
+      // Function to apply PBR properties
+      const applyKicksPbr = () => {
+        if (sharedKicksNormal) {
+          mat.normalMap = sharedKicksNormal;
+          mat.normalScale = new THREE.Vector2(0.85, 0.85);
+        }
+        if (sharedKicksRoughness) {
+          mat.roughnessMap = sharedKicksRoughness;
+          mat.metalnessMap = sharedKicksRoughness;
+          mat.roughness = 0.72;
+          mat.metalness = 0.08;
+        }
+        mat.color.set(0xffffff);
+        mat.needsUpdate = true;
+      };
+
+      // Ensure normal & roughness maps are loaded once and shared
+      if (!sharedKicksNormal) {
+        textureLoader.load(normalUrl, (normTex) => {
+          normTex.flipY = false;
+          normTex.anisotropy = maxAniso;
+          sharedKicksNormal = normTex;
+          applyKicksPbr();
+        });
+      }
+      if (!sharedKicksRoughness) {
+        textureLoader.load(roughtUrl, (aoTex) => {
+          aoTex.flipY = false;
+          sharedKicksRoughness = aoTex;
+          applyKicksPbr();
+        });
+      }
+
+      // Preload all sibling swatches in background for instant colorway swaps
+      if (activeProduct.swatches) {
+        activeProduct.swatches.forEach((sw) => {
+          const { atlasUrl: swUrl } = getTextureAtlasUrl(activeProduct.model3d, sw.name);
+          if (!textureCache.has(swUrl)) {
+            textureLoader.load(swUrl, (t) => {
+              t.colorSpace = THREE.SRGBColorSpace;
+              t.flipY = false;
+              t.anisotropy = maxAniso;
+              textureCache.set(swUrl, t);
+            });
+          }
+        });
+      }
+
+      // If diffuse texture is already cached, swap immediately (0 latency)
+      if (textureCache.has(atlasUrl)) {
+        mat.map = textureCache.get(atlasUrl)!;
+        applyKicksPbr();
+      } else {
+        textureLoader.load(
+          atlasUrl,
+          (diffuseTex) => {
+            diffuseTex.colorSpace = THREE.SRGBColorSpace;
+            diffuseTex.flipY = false;
+            diffuseTex.anisotropy = maxAniso;
+            textureCache.set(atlasUrl, diffuseTex);
+            mat.map = diffuseTex;
+            applyKicksPbr();
+          },
+          undefined,
+          () => {
+            if (textureCache.has(fallbackUrl)) {
+              mat.map = textureCache.get(fallbackUrl)!;
+              applyKicksPbr();
+            } else {
+              textureLoader.load(fallbackUrl, (tex) => {
+                tex.colorSpace = THREE.SRGBColorSpace;
+                tex.flipY = false;
+                textureCache.set(fallbackUrl, tex);
+                mat.map = tex;
+                applyKicksPbr();
+              });
+            }
+          }
+        );
+      }
+      return;
+    }
 
     // Create high-frequency 1px procedural weave normal map for tangible fabric depth
     const createFabricNormal = () => {
@@ -451,6 +482,23 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
 
     const fabricNormal = createFabricNormal();
 
+    const applyApparelTexture = (tex: THREE.Texture) => {
+      mat.map = tex;
+      if (fabricNormal) {
+        mat.normalMap = fabricNormal;
+        mat.normalScale = new THREE.Vector2(0.35, 0.35);
+      }
+      mat.color.set(0xffffff);
+      mat.roughness = 0.88;
+      mat.metalness = 0.02;
+      mat.needsUpdate = true;
+    };
+
+    if (textureCache.has(atlasUrl)) {
+      applyApparelTexture(textureCache.get(atlasUrl)!);
+      return;
+    }
+
     textureLoader.load(
       atlasUrl,
       (tex) => {
@@ -460,36 +508,26 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         tex.generateMipmaps = true;
         tex.minFilter = THREE.LinearMipmapLinearFilter;
         tex.magFilter = THREE.LinearFilter;
-        mat.map = tex;
-        if (fabricNormal) {
-          mat.normalMap = fabricNormal;
-          mat.normalScale = new THREE.Vector2(0.35, 0.35);
-        }
-        mat.color.set(0xffffff); // Keep true uncompressed texture colors
-        mat.roughness = 0.88;
-        mat.metalness = 0.02;
-        mat.needsUpdate = true;
+        textureCache.set(atlasUrl, tex);
+        applyApparelTexture(tex);
       },
       undefined,
       () => {
         // Fallback to base model texture atlas
-        textureLoader.load(fallbackUrl, (tex) => {
-          tex.colorSpace = THREE.SRGBColorSpace;
-          tex.flipY = false;
-          tex.anisotropy = maxAniso;
-          tex.generateMipmaps = true;
-          tex.minFilter = THREE.LinearMipmapLinearFilter;
-          tex.magFilter = THREE.LinearFilter;
-          mat.map = tex;
-          if (fabricNormal) {
-            mat.normalMap = fabricNormal;
-            mat.normalScale = new THREE.Vector2(0.35, 0.35);
-          }
-          mat.color.set(0xffffff);
-          mat.roughness = 0.88;
-          mat.metalness = 0.02;
-          mat.needsUpdate = true;
-        });
+        if (textureCache.has(fallbackUrl)) {
+          applyApparelTexture(textureCache.get(fallbackUrl)!);
+        } else {
+          textureLoader.load(fallbackUrl, (tex) => {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            tex.flipY = false;
+            tex.anisotropy = maxAniso;
+            tex.generateMipmaps = true;
+            tex.minFilter = THREE.LinearMipmapLinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            textureCache.set(fallbackUrl, tex);
+            applyApparelTexture(tex);
+          });
+        }
       }
     );
   };
@@ -510,17 +548,17 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
 
     if (isKicks) {
       if (view === 'front') {
-        cam.position.set(0.65, 0.20, 0.55);
-        ctrl.target.set(0, 0.08, 0);
+        cam.position.set(0.65, 0.28, 0.65);
+        ctrl.target.set(0, 0.05, 0);
       } else if (view === 'back') {
-        cam.position.set(0, 0.22, -0.90);
-        ctrl.target.set(0, 0.08, 0);
+        cam.position.set(-0.65, 0.28, -0.65);
+        ctrl.target.set(0, 0.05, 0);
       } else if (view === 'angle') {
-        cam.position.set(0.75, 0.32, 0.75);
-        ctrl.target.set(0, 0.08, 0);
+        cam.position.set(0.85, 0.40, 0.85);
+        ctrl.target.set(0, 0.05, 0);
       } else if (view === 'close') {
-        cam.position.set(0.38, 0.22, 0.42);
-        ctrl.target.set(0, 0.12, 0.05);
+        cam.position.set(0.38, 0.20, 0.42);
+        ctrl.target.set(0, 0.05, 0);
       }
     } else {
       if (view === 'front') {
