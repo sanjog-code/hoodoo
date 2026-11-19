@@ -4,7 +4,6 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { X, RotateCw, Camera, Sparkles, Move3d } from 'lucide-react';
 import type { Product, Swatch } from '../types';
-import { FEATURED_HERO, CATALOG_PRODUCTS } from '../data/products';
 import { BrandPalette, PALETTES } from './HoodooLogo';
 
 interface ThreeDStudioModalProps {
@@ -30,19 +29,6 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
   const currentPalette = PALETTES[palette] || PALETTES.silver;
   const mountRef = useRef<HTMLDivElement>(null);
   
-  // All products that have 3D models available (Hoodies, Boxy Tees, Skate Sneakers)
-  const availableProducts = useMemo(() => {
-    const list: Product[] = [];
-    if (FEATURED_HERO.model3d) list.push(FEATURED_HERO);
-    CATALOG_PRODUCTS.forEach((p) => {
-      if (p.model3d && !list.some((item) => item.id === p.id)) {
-        list.push(p);
-      }
-    });
-    return list;
-  }, []);
-
-  const [activeCategory, setActiveCategory] = useState<'all' | 'hoodie' | 'tee' | 'kicks'>('all');
   const [activeProduct, setActiveProduct] = useState<Product>(initialProduct);
   const [activeColor, setActiveColor] = useState<string>(
     initialColor || initialProduct.swatches?.[0]?.name || 'Standard'
@@ -368,7 +354,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       const normalUrl = '/assets/models/shoe_textures/normal.jpg.jpg';
       const roughtUrl = '/assets/models/shoe_textures/occlusionRougnessMetalness.jpg.jpg';
 
-      // Function to apply PBR properties
+      // Function to apply PBR properties tailored to each footwear silhouette
       const applyKicksPbr = () => {
         if (sharedKicksNormal) {
           mat.normalMap = sharedKicksNormal;
@@ -377,9 +363,27 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         if (sharedKicksRoughness) {
           mat.roughnessMap = sharedKicksRoughness;
           mat.metalnessMap = sharedKicksRoughness;
-          mat.roughness = 0.72;
-          mat.metalness = 0.08;
         }
+
+        // Tailored material physics:
+        if (activeProduct.id === 'wc-cat-11') {
+          // Chopper Suede Skate Low: Tactile matte hairy cow suede
+          mat.roughness = 0.88;
+          mat.metalness = 0.02;
+        } else if (activeProduct.id === 'wc-cat-10') {
+          // Stealth Runner: Ballistic mesh + matte EVA foam
+          mat.roughness = 0.76;
+          mat.metalness = 0.08;
+        } else if (activeProduct.id === 'wc-cat-16') {
+          // Crenshaw Canvas Deck Shoe: Raw duck canvas
+          mat.roughness = 0.82;
+          mat.metalness = 0.03;
+        } else {
+          // Leather Lows (P9, P12): Tumbled full-grain leather
+          mat.roughness = 0.68;
+          mat.metalness = 0.05;
+        }
+
         mat.color.set(0xffffff);
         mat.needsUpdate = true;
       };
@@ -451,7 +455,9 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       return;
     }
 
-    // Create high-frequency 1px procedural weave normal map for tangible fabric depth
+    const isHoodie = activeProduct.category === 'hoodie' || (activeProduct.model3d || '').includes('hoodie');
+
+    // Create high-frequency tactile micro-knit normal map (French Terry for hoodies vs Combed Jersey for tees)
     const createFabricNormal = () => {
       const canvas = document.createElement('canvas');
       canvas.width = 256;
@@ -459,14 +465,31 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
       const imgData = ctx.createImageData(256, 256);
+
       for (let y = 0; y < 256; y++) {
         for (let x = 0; x < 256; x++) {
           const idx = (y * 256 + x) * 4;
-          const u = (x / 256) * Math.PI * 64;
-          const v = (y / 256) * Math.PI * 64;
-          const twill = Math.sin(u + v * 0.5) * Math.cos(u * 0.5 - v);
-          imgData.data[idx] = Math.min(255, Math.max(0, Math.floor((twill * 0.35 + 0.5) * 255)));
-          imgData.data[idx + 1] = Math.min(255, Math.max(0, Math.floor((Math.sin(u * 2) * 0.25 + 0.5) * 255)));
+          let nx = 128, ny = 128;
+
+          if (isHoodie) {
+            // Heavyweight 500GSM French Terry: Diagonal twill ridges with loop depth
+            const u = (x / 256) * Math.PI * 48;
+            const v = (y / 256) * Math.PI * 48;
+            const twill = Math.sin(u + v) * 0.4 + Math.sin(u * 2 - v) * 0.15;
+            const micro = ((x * 13 + y * 29) % 17) / 17 * 0.1 - 0.05;
+            nx = Math.min(255, Math.max(0, Math.floor(((twill + micro) * 0.45 + 0.5) * 255)));
+            ny = Math.min(255, Math.max(0, Math.floor((Math.cos(u - v) * 0.35 + 0.5) * 255)));
+          } else {
+            // Heavyweight 280GSM Combed Cotton: Fine vertical wale interlock knit
+            const u = (x / 256) * Math.PI * 64;
+            const v = (y / 256) * Math.PI * 64;
+            const wale = Math.sin(u * 2) * 0.35 + Math.cos(v) * 0.15;
+            nx = Math.min(255, Math.max(0, Math.floor((wale * 0.4 + 0.5) * 255)));
+            ny = Math.min(255, Math.max(0, Math.floor((Math.sin(v * 2) * 0.2 + 0.5) * 255)));
+          }
+
+          imgData.data[idx] = nx;
+          imgData.data[idx + 1] = ny;
           imgData.data[idx + 2] = 255;
           imgData.data[idx + 3] = 255;
         }
@@ -475,7 +498,7 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       const normalTex = new THREE.CanvasTexture(canvas);
       normalTex.wrapS = THREE.RepeatWrapping;
       normalTex.wrapT = THREE.RepeatWrapping;
-      normalTex.repeat.set(32, 32);
+      normalTex.repeat.set(isHoodie ? 28 : 36, isHoodie ? 28 : 36);
       normalTex.anisotropy = maxAniso;
       return normalTex;
     };
@@ -486,10 +509,10 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
       mat.map = tex;
       if (fabricNormal) {
         mat.normalMap = fabricNormal;
-        mat.normalScale = new THREE.Vector2(0.35, 0.35);
+        mat.normalScale = new THREE.Vector2(isHoodie ? 0.45 : 0.32, isHoodie ? 0.45 : 0.32);
       }
       mat.color.set(0xffffff);
-      mat.roughness = 0.88;
+      mat.roughness = isHoodie ? 0.90 : 0.84;
       mat.metalness = 0.02;
       mat.needsUpdate = true;
     };
@@ -657,58 +680,45 @@ export const ThreeDStudioModal: React.FC<ThreeDStudioModalProps> = ({
         </div>
       </div>
 
-      {/* Left Dock: Switch Product Design */}
-      <div className="absolute left-6 top-24 bottom-28 hidden md:flex flex-col justify-center gap-2 pointer-events-auto z-20 max-w-[220px]">
-        <div className="flex items-center justify-between px-2 mb-1">
-          <span className="text-[10px] font-mono font-bold text-neutral-400 uppercase tracking-widest">
-            COLLECTION ARCHIVE
-          </span>
-        </div>
+      {/* Left Dock: Dedicated Single-Item Specification HUD */}
+      <div className="absolute left-6 top-24 pointer-events-auto z-20 max-w-[260px] hidden sm:flex flex-col gap-3">
+        <div className="p-4 rounded-2xl bg-neutral-950/85 border border-neutral-800 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase border border-neutral-800 ${currentPalette.badgeBg} ${currentPalette.badgeText}`}>
+              {activeProduct.category}
+            </span>
+            <span className="text-[10px] font-mono font-bold text-neutral-400 tabular-nums">
+              ${activeProduct.price} USD
+            </span>
+          </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex items-center gap-1 p-1 bg-neutral-950/80 border border-neutral-800 rounded-xl mb-1" role="radiogroup" aria-label="Filter 3D pieces">
-          {(['all', 'hoodie', 'tee', 'kicks'] as const).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              role="radio"
-              aria-checked={activeCategory === cat}
-              aria-label={`Filter by ${cat}`}
-              className={`flex-1 py-1.5 min-h-[32px] text-[9px] font-mono font-bold uppercase rounded-lg transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-400 ${
-                activeCategory === cat
-                  ? `${currentPalette.buttonClass} text-white`
-                  : 'text-neutral-400 hover:text-white'
-              }`}
-            >
-              {cat === 'hoodie' ? 'hoodies' : cat === 'tee' ? 'tees' : cat}
-            </button>
-          ))}
-        </div>
+          <h3 className="text-xs font-sans font-black uppercase tracking-tight text-white leading-snug mb-1">
+            {activeProduct.name}
+          </h3>
+          <p className="text-[10px] font-mono text-neutral-400 mb-3 leading-relaxed">
+            {activeProduct.subtitle}
+          </p>
 
-        <div className="space-y-1.5 overflow-y-auto pr-1 max-h-[55vh] scrollbar-none">
-          {availableProducts
-            .filter((p) => activeCategory === 'all' || p.category === activeCategory)
-            .map((item) => {
-              const isCur = activeProduct.id === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveProduct(item);
-                    setActiveColor(item.swatches?.[0]?.name || 'Standard');
-                  }}
-                  aria-label={`View ${item.name}`}
-                  className={`w-full text-left p-2.5 rounded-xl text-[11px] font-mono transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 ${
-                    isCur
-                      ? `bg-neutral-850 text-white ring-2 ${currentPalette.ringClass} border-transparent shadow-lg`
-                      : 'bg-neutral-950/60 text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700'
-                  }`}
-                >
-                  <div className="font-bold truncate">{item.name}</div>
-                  <div className="text-[9px] text-neutral-500 mt-0.5"><span className="tabular-nums">${item.price}</span> USD · <span className="uppercase">{item.category}</span></div>
-                </button>
-              );
-            })}
+          {activeProduct.fabricSpecs && activeProduct.fabricSpecs.length > 0 && (
+            <div className="space-y-1.5 pt-2.5 border-t border-neutral-850">
+              <div className="text-[9px] font-mono font-bold text-neutral-300 uppercase tracking-wider">
+                MATERIAL & SPECS:
+              </div>
+              <ul className="space-y-1 text-[9px] font-mono text-neutral-400">
+                {activeProduct.fabricSpecs.slice(0, 3).map((spec, i) => (
+                  <li key={i} className="flex items-center gap-1.5">
+                    <span className="w-1 h-1 rounded-full bg-neutral-600 flex-shrink-0" />
+                    <span className="truncate">{spec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-3 pt-2.5 border-t border-neutral-850 flex items-center gap-2 text-[9px] font-mono text-neutral-400">
+            <Move3d className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" aria-hidden="true" />
+            <span>DRAG TO ORBIT · SCROLL TO ZOOM</span>
+          </div>
         </div>
       </div>
 
